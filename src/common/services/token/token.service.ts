@@ -114,8 +114,13 @@ export class TokenService {
 	}
 
 	// ---------- Access ----------
-	generateAccessToken(payload: TokenPayload): string {
-		return this.sign(TokenTypeEnum.ACCESS, payload).token;
+	generateAccessToken(payload: TokenPayload): {
+		accessToken: string;
+		refreshToken: string;
+	} {
+		const accessToken = this.sign(TokenTypeEnum.ACCESS, payload).token;
+		const refreshToken = this.sign(TokenTypeEnum.REFRESH, payload).token;
+		return { accessToken, refreshToken };
 	}
 
 	verifyAccessToken(token: string): DecodedToken {
