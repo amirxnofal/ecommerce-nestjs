@@ -8,6 +8,7 @@ import { RedisModule } from './common/services/redis/redis.module.js';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { SecurityService } from './common/services/security/security.service.js';
+import { UsersModule } from './modules/user/user.module.js';
 
 @Module({
 	controllers: [AppController],
@@ -42,6 +43,7 @@ import { SecurityService } from './common/services/security/security.service.js'
 		}),
 
 		AuthModule,
+		UsersModule,
 		TokenModule,
 		RedisModule,
 	],

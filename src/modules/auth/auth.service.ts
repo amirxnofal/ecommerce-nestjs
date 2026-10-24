@@ -32,8 +32,8 @@ import { OtpService } from '../../common/services/otp/otp.service.js';
 import { RedisService } from '../../common/services/redis/redis.service.js';
 import { RedisKeys } from '../../common/constants/redis-key.constant.js';
 import { TokenTypeEnum } from '../../common/enums/token.enum.js';
+import { REFRESH_TTL_SECONDS } from '../../common/constants/auth.constant.js';
 
-const REFRESH_TTL_SECONDS = 7 * 24 * 60 * 60;
 
 @Injectable()
 export class AuthService {
