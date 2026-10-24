@@ -8,16 +8,16 @@ import jwt, { JwtPayload, SignOptions } from 'jsonwebtoken';
 import { ObjectId } from 'mongoose';
 import { TokenTypeEnum } from '../../enums/token.enum.js';
 import { env } from '../../../config/env.service.js';
-import { RoleEnum } from '../../enums/role.enum.js';
+import { UserRole } from '../../enums/user.enum.js';
 
 export interface TokenPayload {
 	userId: string | ObjectId;
-	role: RoleEnum;
+	role: UserRole;
 }
 
 export interface DecodedToken extends JwtPayload {
 	userId: string;
-	role: RoleEnum;
+	role: UserRole;
 	jti: string;
 }
 
@@ -30,20 +30,20 @@ interface TokenConfig {
 @Injectable()
 export class TokenService {
 	private readonly secrets: Record<
-		RoleEnum,
+		UserRole,
 		{ access: string; refresh: string }
 	> = {
-		[RoleEnum.USER]: {
+		[UserRole.USER]: {
 			access: env.userAccessSecret,
 			refresh: env.userRefreshSecret,
 		},
-		[RoleEnum.ADMIN]: {
+		[UserRole.ADMIN]: {
 			access: env.adminAccessSecret,
 			refresh: env.adminRefreshSecret,
 		},
 	};
 
-	private getConfig(type: TokenTypeEnum, role: RoleEnum): TokenConfig {
+	private getConfig(type: TokenTypeEnum, role: UserRole): TokenConfig {
 		const roleSecrets = this.secrets[role];
 		if (!roleSecrets) {
 			throw new BadRequestException(`Invalid role: ${role}`);
@@ -85,7 +85,7 @@ export class TokenService {
 	}
 
 	private verify(type: TokenTypeEnum, token: string): DecodedToken {
-		const unverified = jwt.decode(token) as { role?: RoleEnum } | null;
+		const unverified = jwt.decode(token) as { role?: UserRole } | null;
 
 		if (
 			!unverified?.role ||

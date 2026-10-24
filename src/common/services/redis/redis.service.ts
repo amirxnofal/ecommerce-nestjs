@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { createClient, RedisClientType } from 'redis';
 import { env } from '../../../config/env.service.js';
 import { TokenTypeEnum } from '../../enums/token.enum.js';
@@ -10,6 +10,7 @@ type UserId = string | Types.ObjectId;
 
 @Injectable()
 export class RedisService {
+	private readonly logger = new Logger(RedisService.name);
 	private client: RedisClientType;
 	constructor() {
 		this.client = createClient({ url: env.redisUrl });
@@ -19,11 +20,11 @@ export class RedisService {
 
 	handleConnection() {
 		this.client.on('error', (err) => {
-			console.error('\x1b[1;31m[ERROR]\x1b[0m Redis Client Error:', err);
+			this.logger.error('Redis Client Error:', err);
 		});
 
 		this.client.on('ready', () => {
-			console.log('\x1b[1;32m[OK]\x1b[0m Connected to Redis');
+			this.logger.log('Connected to Redis');
 		});
 	}
 
@@ -31,11 +32,8 @@ export class RedisService {
 		if (!this.client.isOpen) {
 			try {
 				await this.client.connect();
-			} catch (error) {
-				console.error(
-					'\x1b[1;31m[ERROR]\x1b[0m Redis connection error:',
-					error,
-				);
+			} catch (err) {
+				this.logger.error('Redis Client Error:', err);
 			}
 		}
 	}
