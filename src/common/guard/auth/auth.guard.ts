@@ -11,11 +11,11 @@ import {
 	TokenService,
 } from '../../services/token/token.service.js';
 import { TokenTypeEnum } from '../../enums/token.enum.js';
-import { RoleEnum } from '../../enums/role.enum.js';
+import { UserRole } from '../../enums/user.enum.js';
 
 export interface AuthUser {
 	userId: string;
-	role: RoleEnum;
+	role: UserRole;
 	jti: string;
 	exp?: number;
 }

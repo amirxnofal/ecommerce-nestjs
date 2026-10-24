@@ -8,20 +8,16 @@ import {
 	UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { memoryStorage } from 'multer';
+import 'multer';
 import { AuthService } from './auth.service.js';
 import { CustomValidationPipe } from '../../common/pipe/validation.pipe.js';
 import { type RegisterDto, registerSchema } from './auth.validation.js';
-import { LoggingInterceptor } from '../../logging/logging.interceptor.js';
-import { AuthGuard } from '../../common/guard/auth/auth.guard.js';
-
 @Controller('auth')
-@UseInterceptors(LoggingInterceptor)
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
+	//* =============[ Register Controller ]=============
 	@Post('register')
-	@UseGuards(AuthGuard)
 	@UseInterceptors(
 		FileInterceptor('image', {
 			dest: './uploads',
@@ -49,4 +45,6 @@ export class AuthController {
 		);
 		return { message: 'Registered successfully', data: user };
 	}
+
+	// @UseGuards(AuthGuard)
 }

@@ -7,7 +7,7 @@ import {
 import { map, tap } from 'rxjs';
 
 @Injectable()
-export class LoggingInterceptor implements NestInterceptor {
+export class SuccessResponseInterceptor implements NestInterceptor {
 	intercept(context: ExecutionContext, next: CallHandler) {
 		return next.handle().pipe(
 			map((result) => {
