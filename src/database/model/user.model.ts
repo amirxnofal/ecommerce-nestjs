@@ -3,6 +3,7 @@ import {
 	UserGender,
 	UserProvider,
 	UserRole,
+	UserStatus,
 } from '../../common/enums/user.enum.js';
 import { HydratedDocument } from 'mongoose';
 import { IUser } from '../../common/interfaces/user.interface.js';
@@ -42,6 +43,9 @@ export class User {
 
 	@Prop({ type: Boolean, default: false })
 	isVerified: boolean;
+
+	@Prop({ type: String, enum: UserStatus, default: UserStatus.INACTIVE })
+	status: boolean;
 }
 
 export type UserDocument = HydratedDocument<IUser>;

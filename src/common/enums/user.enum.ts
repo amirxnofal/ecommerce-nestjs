@@ -12,3 +12,10 @@ export enum UserGender {
 	MALE = 'male',
 	FEMALE = 'female',
 }
+
+export enum UserStatus {
+	ACTIVE = 'active',
+	INACTIVE = 'inactive',
+	SUSPENDED = 'suspended',
+	DELETED = 'deleted',
+}

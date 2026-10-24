@@ -7,4 +7,5 @@ export interface IUser {
 	gender: string;
 	role: string;
 	isVerified: boolean;
+	status: string;
 }

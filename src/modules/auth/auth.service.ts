@@ -2,13 +2,18 @@ import {
 	BadRequestException,
 	ConflictException,
 	Injectable,
+	UnauthorizedException,
 } from '@nestjs/common';
-import { RegisterDto } from './auth.validation.js';
-import { TokenService } from '../../common/services/token/token.service.js';
+import { loginDto, RegisterDto } from './auth.validation.js';
+import {
+	TokenPayload,
+	TokenService,
+} from '../../common/services/token/token.service.js';
 import {
 	UserGender,
 	UserProvider,
 	UserRole,
+	UserStatus,
 } from '../../common/enums/user.enum.js';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../../database/model/user.model.js';
@@ -23,6 +28,7 @@ export class AuthService {
 		@InjectModel(User.name) private readonly model: Model<IUser>,
 		private readonly otp: OtpService,
 		private readonly security: SecurityService,
+		private readonly tokenService: TokenService,
 	) {}
 	async register(data: RegisterDto, file: Express.Multer.File): Promise<any> {
 		const { name, email, password, phone, gender } = data;
@@ -46,6 +52,7 @@ export class AuthService {
 
 			role: UserRole.USER,
 			isVerified: false,
+			status: UserStatus.INACTIVE,
 		});
 		if (!user) throw new BadRequestException('Registration failed');
 
@@ -58,5 +65,33 @@ export class AuthService {
 			console.log(file.originalname);
 		}
 		return user;
+	}
+
+	async login(data: loginDto) {
+		const { email, password } = data;
+
+		const user = await this.model.findOne({ email }).select('+password');
+		if (!user) throw new BadRequestException('Invalid credentials');
+
+		const isMatch = await this.security.compareText(
+			password,
+			user.password,
+		);
+
+		if (!isMatch) throw new UnauthorizedException('Invalid credentials');
+
+		if (!user.isVerified)
+			throw new UnauthorizedException('Verify email and try again');
+
+		if (user.status !== UserStatus.ACTIVE)
+			throw new UnauthorizedException(`Account ${user.status}`);
+
+		const payload: TokenPayload = {
+			userId: user._id.toString(),
+			role: user.role as UserRole,
+		};
+		const tokens = this.tokenService.generateAccessToken(payload);
+
+		return tokens;
 	}
 }
