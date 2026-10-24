@@ -114,13 +114,8 @@ export class TokenService {
 	}
 
 	// ---------- Access ----------
-	generateAccessToken(payload: TokenPayload): {
-		accessToken: string;
-		refreshToken: string;
-	} {
-		const accessToken = this.sign(TokenTypeEnum.ACCESS, payload).token;
-		const refreshToken = this.sign(TokenTypeEnum.REFRESH, payload).token;
-		return { accessToken, refreshToken };
+	generateAccessToken(payload: TokenPayload) {
+		return this.sign(TokenTypeEnum.ACCESS, payload).token;
 	}
 
 	verifyAccessToken(token: string): DecodedToken {
@@ -134,5 +129,15 @@ export class TokenService {
 
 	verifyRefreshToken(token: string): DecodedToken {
 		return this.verify(TokenTypeEnum.REFRESH, token);
+	}
+
+	// ---------- Tokens ----------
+	generateTokens(payload: TokenPayload): {
+		accessToken: string;
+		refreshToken: string;
+	} {
+		const accessToken = this.sign(TokenTypeEnum.ACCESS, payload).token;
+		const refreshToken = this.sign(TokenTypeEnum.REFRESH, payload).token;
+		return { accessToken, refreshToken };
 	}
 }

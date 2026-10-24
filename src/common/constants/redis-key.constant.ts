@@ -21,4 +21,8 @@ export class RedisKeys {
 	static socketID(userId: string | Types.ObjectId): string {
 		return `userId:sockets:${userId}`;
 	}
+
+	static tokensValidFrom(userId: string | Types.ObjectId): string {
+		return `tokens-valid-from:${userId}`;
+	}
 }

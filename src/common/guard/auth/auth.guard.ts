@@ -50,6 +50,15 @@ export class AuthGuard implements CanActivate {
 			throw new UnauthorizedException('Token revoked');
 		}
 
+		const validFrom = await this.redisService.getTokensValidFrom(
+			decoded.userId,
+		);
+		if (validFrom && decoded.iat! < validFrom) {
+			throw new UnauthorizedException(
+				'Session revoked, please login again',
+			);
+		}
+
 		request.user = {
 			userId: decoded.userId,
 			role: decoded.role,

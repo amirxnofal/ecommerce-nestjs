@@ -90,7 +90,7 @@ export class AuthService {
 			userId: user._id.toString(),
 			role: user.role as UserRole,
 		};
-		const tokens = this.tokenService.generateAccessToken(payload);
+		const tokens = this.tokenService.generateTokens(payload);
 
 		return tokens;
 	}

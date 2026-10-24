@@ -88,6 +88,21 @@ export class RedisService {
 		return decoded.jti;
 	}
 
+	//? ----------[ Revoke All Sessions Methods ]----------
+	async revokeAllSessions(userId: UserId, ttl: number) {
+		const now = Math.floor(Date.now() / 1000);
+		return await this.set({
+			key: RedisKeys.tokensValidFrom(userId),
+			value: String(now),
+			ttl,
+		});
+	}
+
+	async getTokensValidFrom(userId: UserId): Promise<number | null> {
+		const value = await this.get(RedisKeys.tokensValidFrom(userId));
+		return value ? Number(value) : null;
+	}
+
 	//? ----------[ Socket io Methods ]----------
 	async addSocket(userId: UserId, socketId: string) {
 		return await this.client.sAdd(RedisKeys.socketID(userId), socketId);
