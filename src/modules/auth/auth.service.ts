@@ -4,7 +4,12 @@ import {
 	Injectable,
 	UnauthorizedException,
 } from '@nestjs/common';
-import { loginDto, RegisterDto } from './auth.validation.js';
+import {
+	loginDto,
+	RegisterDto,
+	resendOtpDto,
+	verifyDto,
+} from './auth.validation.js';
 import {
 	TokenPayload,
 	TokenService,
@@ -21,6 +26,8 @@ import { Model } from 'mongoose';
 import { IUser } from '../../common/interfaces/user.interface.js';
 import { SecurityService } from '../../common/services/security/security.service.js';
 import { OtpService } from '../../common/services/otp/otp.service.js';
+import { RedisService } from '../../common/services/redis/redis.service.js';
+import { RedisKeys } from '../../common/constants/redis-key.constant.js';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +36,9 @@ export class AuthService {
 		private readonly otp: OtpService,
 		private readonly security: SecurityService,
 		private readonly tokenService: TokenService,
+		private readonly redisService: RedisService,
 	) {}
+
 	async register(data: RegisterDto, file: Express.Multer.File): Promise<any> {
 		const { name, email, password, phone, gender } = data;
 
@@ -54,6 +63,7 @@ export class AuthService {
 			isVerified: false,
 			status: UserStatus.INACTIVE,
 		});
+
 		if (!user) throw new BadRequestException('Registration failed');
 
 		await this.otp.generateAndSend(
@@ -64,6 +74,7 @@ export class AuthService {
 		if (file) {
 			console.log(file.originalname);
 		}
+
 		return user;
 	}
 
@@ -71,6 +82,7 @@ export class AuthService {
 		const { email, password } = data;
 
 		const user = await this.model.findOne({ email }).select('+password');
+
 		if (!user) throw new BadRequestException('Invalid credentials');
 
 		const isMatch = await this.security.compareText(
@@ -93,5 +105,49 @@ export class AuthService {
 		const tokens = this.tokenService.generateTokens(payload);
 
 		return tokens;
+	}
+
+	async verify(data: verifyDto) {
+		const { email, otp } = data;
+
+		const user = await this.model.findOne({ email });
+		if (!user) throw new BadRequestException('Email not found');
+
+		if (user.isVerified)
+			throw new UnauthorizedException('Email already verified');
+
+		const hashedOtp = await this.redisService.get(
+			RedisKeys.verifyEmail(user._id.toString()),
+		);
+
+		if (!hashedOtp) throw new BadRequestException('Invalid or expired otp');
+
+		const isMatch = await this.security.compareText(otp, hashedOtp);
+
+		if (!isMatch) throw new UnauthorizedException('Invalid or expired otp');
+
+		user.isVerified = true;
+		user.status = UserStatus.ACTIVE;
+		await user.save();
+
+		await this.redisService.del(RedisKeys.verifyEmail(user._id.toString()));
+
+		return;
+	}
+
+	async resendOtp(data: resendOtpDto) {
+		const { email } = data;
+
+		const user = await this.model.findOne({ email });
+
+		if (!user) throw new BadRequestException('Unable to process request');
+
+		await this.otp.generateAndSend(
+			user,
+			'verify-email',
+			'OTP Verification',
+		);
+
+		return;
 	}
 }

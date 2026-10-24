@@ -16,6 +16,8 @@ import {
 	loginSchema,
 	type RegisterDto,
 	registerSchema,
+	type verifyDto,
+	verifySchema,
 } from './auth.validation.js';
 @Controller('auth')
 export class AuthController {
@@ -54,9 +56,19 @@ export class AuthController {
 	//* =============[ Login Controller ]=============
 	@Post('login')
 	async login(@Body(new CustomValidationPipe(loginSchema)) body: loginDto) {
-		const user = await this.authService.login(body);
-		return { message: 'Login successfully', data: user };
+		const result = await this.authService.login(body);
+		return { message: 'Login successfully', data: result };
 	}
+
+	//* =============[ Login Controller ]=============
+	@Post('verify')
+	async verify(
+		@Body(new CustomValidationPipe(verifySchema)) body: verifyDto,
+	) {
+		const result = await this.authService.verify(body);
+		return { message: 'Account verified', data: result };
+	}
+	
 
 	// @UseGuards(AuthGuard)
 }

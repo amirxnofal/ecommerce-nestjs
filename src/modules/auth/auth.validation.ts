@@ -49,3 +49,16 @@ export const loginSchema = z.strictObject({
 });
 
 export type loginDto = z.infer<typeof loginSchema>;
+
+export const verifySchema = z.strictObject({
+	email: z.string().email(),
+	otp: z.string().length(6),
+});
+
+export type verifyDto = z.infer<typeof verifySchema>;
+
+export const resendOtpSchema = z.strictObject({
+	email: z.string().trim().toLowerCase().email('Invalid email format'),
+});
+
+export type resendOtpDto = z.infer<typeof resendOtpSchema>;
