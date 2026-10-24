@@ -5,12 +5,15 @@ import {
 	UnauthorizedException,
 } from '@nestjs/common';
 import {
+	forgetPasswordDto,
 	loginDto,
 	RegisterDto,
 	resendOtpDto,
+	resetPasswordDto,
 	verifyDto,
 } from './auth.validation.js';
 import {
+	DecodedToken,
 	TokenPayload,
 	TokenService,
 } from '../../common/services/token/token.service.js';
@@ -28,6 +31,9 @@ import { SecurityService } from '../../common/services/security/security.service
 import { OtpService } from '../../common/services/otp/otp.service.js';
 import { RedisService } from '../../common/services/redis/redis.service.js';
 import { RedisKeys } from '../../common/constants/redis-key.constant.js';
+import { TokenTypeEnum } from '../../common/enums/token.enum.js';
+
+const REFRESH_TTL_SECONDS = 7 * 24 * 60 * 60;
 
 @Injectable()
 export class AuthService {
@@ -39,11 +45,11 @@ export class AuthService {
 		private readonly redisService: RedisService,
 	) {}
 
-	async register(data: RegisterDto, file: Express.Multer.File): Promise<any> {
+	//* =============[ Register ]=============
+	async register(data: RegisterDto, file?: Express.Multer.File) {
 		const { name, email, password, phone, gender } = data;
 
 		const existingUser = await this.model.findOne({ email });
-
 		if (existingUser) throw new ConflictException('Email already exists');
 
 		const hashedPassword = await this.security.hashText(password);
@@ -58,12 +64,10 @@ export class AuthService {
 				gender === UserGender.MALE
 					? UserGender.MALE
 					: UserGender.FEMALE,
-
 			role: UserRole.USER,
 			isVerified: false,
 			status: UserStatus.INACTIVE,
 		});
-
 		if (!user) throw new BadRequestException('Registration failed');
 
 		await this.otp.generateAndSend(
@@ -71,25 +75,23 @@ export class AuthService {
 			'verify-email',
 			'OTP Verification',
 		);
-		if (file) {
-			console.log(file.originalname);
-		}
 
-		return user;
+		// TODO: حفظ الصورة (file) لما تكمل الجزء ده
+
+		return { id: user._id, name: user.name, email: user.email };
 	}
 
+	//* =============[ Login ]=============
 	async login(data: loginDto) {
 		const { email, password } = data;
 
 		const user = await this.model.findOne({ email }).select('+password');
-
-		if (!user) throw new BadRequestException('Invalid credentials');
+		if (!user) throw new UnauthorizedException('Invalid credentials');
 
 		const isMatch = await this.security.compareText(
 			password,
 			user.password,
 		);
-
 		if (!isMatch) throw new UnauthorizedException('Invalid credentials');
 
 		if (!user.isVerified)
@@ -102,11 +104,11 @@ export class AuthService {
 			userId: user._id.toString(),
 			role: user.role as UserRole,
 		};
-		const tokens = this.tokenService.generateTokens(payload);
 
-		return tokens;
+		return this.tokenService.generateTokens(payload);
 	}
 
+	//* =============[ Verify Email ]=============
 	async verify(data: verifyDto) {
 		const { email, otp } = data;
 
@@ -119,11 +121,9 @@ export class AuthService {
 		const hashedOtp = await this.redisService.get(
 			RedisKeys.verifyEmail(user._id.toString()),
 		);
-
 		if (!hashedOtp) throw new BadRequestException('Invalid or expired otp');
 
 		const isMatch = await this.security.compareText(otp, hashedOtp);
-
 		if (!isMatch) throw new UnauthorizedException('Invalid or expired otp');
 
 		user.isVerified = true;
@@ -131,23 +131,117 @@ export class AuthService {
 		await user.save();
 
 		await this.redisService.del(RedisKeys.verifyEmail(user._id.toString()));
-
-		return;
 	}
 
+	//* =============[ Resend OTP ]=============
 	async resendOtp(data: resendOtpDto) {
 		const { email } = data;
 
 		const user = await this.model.findOne({ email });
-
 		if (!user) throw new BadRequestException('Unable to process request');
+
+		if (user.isVerified)
+			throw new BadRequestException('Unable to process request');
 
 		await this.otp.generateAndSend(
 			user,
 			'verify-email',
 			'OTP Verification',
 		);
+	}
 
-		return;
+	//* =============[ Forget Password ]=============
+	async forgetPassword(data: forgetPasswordDto) {
+		const { email } = data;
+
+		const user = await this.model.findOne({ email });
+		if (!user) throw new BadRequestException('Invalid request');
+
+		if (!user.isVerified)
+			throw new BadRequestException('Please verify your email first');
+
+		if (user.status !== UserStatus.ACTIVE)
+			throw new UnauthorizedException(`Account ${user.status}`);
+
+		await this.otp.generateAndSend(
+			user,
+			'reset-password',
+			'Reset Password',
+		);
+	}
+
+	//* =============[ Reset Password ]=============
+	async resetPassword(data: resetPasswordDto) {
+		const { email, otp, newPassword } = data;
+
+		const user = await this.model.findOne({ email });
+		if (!user) throw new BadRequestException('Invalid request');
+
+		const hashedOtp = await this.redisService.get(
+			RedisKeys.resetPassword(user._id.toString()),
+		);
+		if (!hashedOtp) throw new BadRequestException('Invalid or expired otp');
+
+		const isMatch = await this.security.compareText(otp, hashedOtp);
+		if (!isMatch) throw new UnauthorizedException('Invalid or expired otp');
+
+		user.password = await this.security.hashText(newPassword);
+		await user.save();
+
+		await this.redisService.del(
+			RedisKeys.resetPassword(user._id.toString()),
+		);
+
+		await this.redisService.revokeAllSessions(
+			user._id.toString(),
+			REFRESH_TTL_SECONDS,
+		);
+	}
+
+	//* =============[ Refresh ]=============
+	async refresh(refreshToken: string) {
+		const d = this.tokenService.verifyRefreshToken(refreshToken);
+
+		const revoked = await this.redisService.isTokenBlacklisted(
+			d.jti,
+			TokenTypeEnum.REFRESH,
+		);
+		if (revoked) throw new UnauthorizedException('Token revoked');
+
+		const validFrom = await this.redisService.getTokensValidFrom(d.userId);
+		if (validFrom && d.iat! < validFrom)
+			throw new UnauthorizedException(
+				'Session revoked, please login again',
+			);
+
+		await this.redisService.createRevokeToken(d, TokenTypeEnum.REFRESH);
+
+		return this.tokenService.generateTokens({
+			userId: d.userId,
+			role: d.role,
+		});
+	}
+
+	//* =============[ Logout (current device) ]=============
+	async logout(accessToken: DecodedToken, refreshToken?: string) {
+		await this.redisService.createRevokeToken(
+			accessToken,
+			TokenTypeEnum.ACCESS,
+		);
+
+		if (refreshToken) {
+			try {
+				const r = this.tokenService.verifyRefreshToken(refreshToken);
+				await this.redisService.createRevokeToken(
+					r,
+					TokenTypeEnum.REFRESH,
+				);
+			} catch {}
+		}
+	}
+
+	//* =============[ Logout All Devices ]=============
+	async logoutAll(userId: string) {
+		await this.redisService.revokeAllSessions(userId, REFRESH_TTL_SECONDS);
 	}
 }

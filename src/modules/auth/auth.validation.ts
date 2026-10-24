@@ -62,3 +62,31 @@ export const resendOtpSchema = z.strictObject({
 });
 
 export type resendOtpDto = z.infer<typeof resendOtpSchema>;
+
+export const forgetPasswordSchema = z.strictObject({
+	email: z.string().trim().toLowerCase().email('Invalid email format'),
+});
+
+export type forgetPasswordDto = z.infer<typeof forgetPasswordSchema>;
+
+export const resetPasswordSchema = z
+	.strictObject({
+		email: z.string().trim().toLowerCase().email('Invalid email format'),
+		otp: z.string().length(6, 'OTP must be 6 digits'),
+		newPassword: z
+			.string()
+			.min(8, 'Password must be at least 8 characters'),
+		confirmNewPassword: z.string(),
+	})
+	.refine((data) => data.newPassword === data.confirmNewPassword, {
+		message: 'Passwords do not match',
+		path: ['confirmNewPassword'],
+	});
+
+export type resetPasswordDto = z.infer<typeof resetPasswordSchema>;
+
+export const refreshSchema = z.strictObject({
+	refreshToken: z.string().min(1, 'Refresh token is required'),
+});
+
+export type refreshDto = z.infer<typeof refreshSchema>;

@@ -72,7 +72,10 @@ export class RedisService {
 		return result === 1;
 	}
 
-	async createRevokeToken(decoded: DecodedToken, type: TokenTypeEnum) {
+	async createRevokeToken(
+		decoded: Pick<DecodedToken, 'jti' | 'exp'>,
+		type: TokenTypeEnum,
+	) {
 		if (!decoded?.jti || !decoded.exp) return null;
 
 		const now = Math.floor(Date.now() / 1000);
