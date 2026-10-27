@@ -10,14 +10,13 @@ import { unlink } from 'node:fs/promises';
 import { Brand } from '../../database/model/brand.model.js';
 import { IBrand } from '../../common/interfaces/brand.interface.js';
 import { generateSlug } from '../../common/utils/slug.utils.js';
-import { sl } from 'zod/locales';
 
 @Injectable()
 export class BrandService {
 	//* ------------------------ IMAGE HELPERS ------------------------ *//
 	private async uploadImage(file?: Express.Multer.File) {
 		if (!file) return console.log('No File Uploaded');
-		console.log('FROM UPLOAD METHOD: ', file);
+		console.log('FROM UPLOAD METHOD: ', file.path);
 		return file.path;
 	}
 	private async deleteImage(path: string | undefined) {

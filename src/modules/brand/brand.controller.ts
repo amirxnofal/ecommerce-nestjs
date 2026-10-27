@@ -69,8 +69,8 @@ export class BrandController {
 	}
 
 	//* ------------------------ GET BRAND BY ID ------------------------ *//
-	@Get('slug')
-	getBrandBySlug(@Param('slug') slug: string) {
-		return this.brandService.getBrandBySlug(slug);
+	@Get(':slug')
+	async getBrandBySlug(@Param('slug') slug: string) {
+		return await this.brandService.getBrandBySlug(slug);
 	}
 }
