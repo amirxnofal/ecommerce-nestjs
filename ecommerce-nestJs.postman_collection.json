@@ -1,0 +1,693 @@
+{
+  "info": {
+    "_postman_id": "295644ba-931a-4bb9-a284-86cdcd3974fa",
+    "name": "ecommerce-nestJs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54240278",
+    "_collection_link": "https://go.postman.co/collection/54240278-295644ba-931a-4bb9-a284-86cdcd3974fa?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/x50am/Pictures/AirPods Pro 2.jpg"
+                  ]
+                },
+                {
+                  "key": "email",
+                  "value": "{{email}}",
+                  "type": "text"
+                },
+                {
+                  "key": "name",
+                  "value": "amirxnofal",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "{{password}}",
+                  "type": "text"
+                },
+                {
+                  "key": "confirmPassword",
+                  "value": "{{password}}",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "01012335619",
+                  "type": "text"
+                },
+                {
+                  "key": "gender",
+                  "value": "male",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Resend OTP",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"{{email}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/resend-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "resend-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify email",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"otp\": \"251760\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "verify"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {\r\n    const json = pm.response.json();\r\n    if (json.data && json.data.accessToken) {\r\n        pm.collectionVariables.set('accessToken', json.data.accessToken);\r\n        if (json.data.refreshToken) {\r\n            pm.collectionVariables.set('refreshToken', json.data.refreshToken);\r\n        }\r\n        console.log('Auto saved accessToken & refreshToken');\r\n    }\r\n}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {\r\n    const json = pm.response.json();\r\n    if (json.data && json.data.accessToken) {\r\n        pm.collectionVariables.set('accessToken', json.data.accessToken);\r\n        pm.collectionVariables.set('refreshToken', json.data.refreshToken);\r\n        console.log('Auto saved accessToken & refreshToken');\r\n    }\r\n}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"refreshToken\": \"{{refreshToken}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Forget password",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"{{email}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/forget",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "forget"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset password",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"newPassword\": \"{{password}}\",\r\n    \"confirmNewPassword\": \"{{password}}\",\r\n    \"otp\": \"618033\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/reset",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "reset"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout (current device)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"refreshToken\": \"{{refreshToken}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout All Devices",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout-all",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout-all"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {\r\n    const json = pm.response.json();\r\n    if (json.data && json.data._id) {\r\n        pm.collectionVariables.set('userId', json.data._id);\r\n        console.log('Auto saved userId');\r\n    }\r\n}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "gender",
+                  "value": "male",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/x50am/Pictures/BG_02.png"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Account",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Brand",
+      "item": [
+        {
+          "name": "Get All Brands",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/brand",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "brand"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Brand",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Product 36",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/x50am/Pictures/Amazon Echo Dot (5th Gen).jpg"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/brand",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "brand"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Brand",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Product 69",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/x50am/Pictures/Amazon Echo Dot (5th Gen).jpg"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/brand/product-69",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "brand",
+                "product-69"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Brand",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/brand/product-asd/delete",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "brand",
+                "product-asd",
+                "delete"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Restore Brand",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/brand/product-asd/restore",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "brand",
+                "product-asd",
+                "restore"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Brand By Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/brand/2324",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "brand",
+                "2324"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "password",
+      "value": ""
+    },
+    {
+      "key": "email",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": ""
+    }
+  ]
+}
