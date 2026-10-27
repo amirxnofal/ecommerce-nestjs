@@ -45,19 +45,12 @@ export class User {
 	isVerified: boolean;
 
 	@Prop({ type: String, enum: UserStatus, default: UserStatus.INACTIVE })
-	status: boolean;
+	status: UserStatus;
 }
 
 export type UserDocument = HydratedDocument<IUser>;
 
 export const userSchema = SchemaFactory.createForClass(User);
-
-userSchema.set('toJSON', {
-	transform: (_doc, ret) => {
-		const { password: _password, ...safe } = ret;
-		return safe;
-	},
-});
 
 export const UserModel = MongooseModule.forFeature([
 	{ name: User.name, schema: userSchema },

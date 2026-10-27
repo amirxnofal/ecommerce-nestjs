@@ -9,6 +9,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
 import { SecurityService } from './common/services/security/security.service.js';
 import { UsersModule } from './modules/user/user.module.js';
+import { BrandModule } from './modules/brand/brand.module.js';
 
 @Module({
 	controllers: [AppController],
@@ -42,10 +43,11 @@ import { UsersModule } from './modules/user/user.module.js';
 			}),
 		}),
 
-		AuthModule,
-		UsersModule,
 		TokenModule,
 		RedisModule,
+		AuthModule,
+		UsersModule,
+		BrandModule,
 	],
 })
 export class AppModule {}
