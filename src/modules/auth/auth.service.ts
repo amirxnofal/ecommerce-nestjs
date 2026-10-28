@@ -34,7 +34,6 @@ import { RedisKeys } from '../../common/constants/redis-key.constant.js';
 import { TokenTypeEnum } from '../../common/enums/token.enum.js';
 import { REFRESH_TTL_SECONDS } from '../../common/constants/auth.constant.js';
 
-
 @Injectable()
 export class AuthService {
 	constructor(
@@ -200,25 +199,34 @@ export class AuthService {
 
 	//* =============[ Refresh ]=============
 	async refresh(refreshToken: string) {
-		const d = this.tokenService.verifyRefreshToken(refreshToken);
+		const decoded = this.tokenService.verifyRefreshToken(refreshToken);
 
-		const revoked = await this.redisService.isTokenBlacklisted(
-			d.jti,
-			TokenTypeEnum.REFRESH,
+		const validFrom = await this.redisService.getTokensValidFrom(
+			decoded.userId,
 		);
-		if (revoked) throw new UnauthorizedException('Token revoked');
-
-		const validFrom = await this.redisService.getTokensValidFrom(d.userId);
-		if (validFrom && d.iat! < validFrom)
+		if (validFrom && decoded.iat! < validFrom)
 			throw new UnauthorizedException(
 				'Session revoked, please login again',
 			);
 
-		await this.redisService.createRevokeToken(d, TokenTypeEnum.REFRESH);
+		const firstUse = await this.redisService.revokeTokenOnce(
+			decoded,
+			TokenTypeEnum.REFRESH,
+		);
+
+		if (!firstUse) {
+			await this.redisService.revokeAllSessions(
+				decoded.userId,
+				REFRESH_TTL_SECONDS,
+			);
+			throw new UnauthorizedException(
+				'Token reuse detected, please login again',
+			);
+		}
 
 		return this.tokenService.generateTokens({
-			userId: d.userId,
-			role: d.role,
+			userId: decoded.userId,
+			role: decoded.role,
 		});
 	}
 

@@ -106,6 +106,23 @@ export class RedisService {
 		return value ? Number(value) : null;
 	}
 
+	async revokeTokenOnce(
+		decoded: Pick<DecodedToken, 'jti' | 'exp'>,
+		type: TokenTypeEnum,
+	): Promise<boolean> {
+		if (!decoded?.jti || !decoded.exp) return false;
+
+		const ttl = decoded.exp - Math.floor(Date.now() / 1000);
+		if (ttl <= 0) return false;
+
+		const res = await this.client.set(
+			RedisKeys.revokedToken(type, decoded.jti),
+			'1',
+			{ EX: ttl, NX: true },
+		);
+		return res === 'OK';
+	}
+
 	//? ----------[ Socket io Methods ]----------
 	async addSocket(userId: UserId, socketId: string) {
 		return await this.client.sAdd(RedisKeys.socketID(userId), socketId);
