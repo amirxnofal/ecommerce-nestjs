@@ -33,9 +33,15 @@ import { RedisService } from '../../common/services/redis/redis.service.js';
 import { RedisKeys } from '../../common/constants/redis-key.constant.js';
 import { TokenTypeEnum } from '../../common/enums/token.enum.js';
 import { REFRESH_TTL_SECONDS } from '../../common/constants/auth.constant.js';
+import {
+	OAuth2Client,
+	TokenPayload as TokenPayload_Google,
+} from 'google-auth-library';
+import { env } from '../../config/env.service.js';
 
 @Injectable()
 export class AuthService {
+	private readonly googleClient = new OAuth2Client(env.googleClientId);
 	constructor(
 		@InjectModel(User.name) private readonly model: Model<IUser>,
 		private readonly otp: OtpService,
@@ -75,8 +81,6 @@ export class AuthService {
 			'OTP Verification',
 		);
 
-		// TODO: حفظ الصورة (file) لما تكمل الجزء ده
-
 		return { id: user._id, name: user.name, email: user.email };
 	}
 
@@ -105,6 +109,48 @@ export class AuthService {
 		};
 
 		return this.tokenService.generateTokens(payload);
+	}
+
+	//* =============[ Google Login ]=============
+	async googleLogin({ idToken }: { idToken: string }) {
+		if (!idToken) throw new BadRequestException('idToken is required');
+
+		let payload: TokenPayload_Google | undefined;
+		try {
+			const ticket = await this.googleClient.verifyIdToken({
+				idToken,
+				audience: env.googleClientId,
+			});
+			payload = ticket.getPayload();
+		} catch {
+			throw new UnauthorizedException('Invalid Google token');
+		}
+		if (!payload?.email || !payload.email_verified)
+			throw new UnauthorizedException('Google email not verified');
+
+		let user = await this.model.findOne({ email: payload.email });
+
+		if (!user) {
+			user = await this.model.create({
+				name: payload.given_name ?? payload.name,
+				email: payload.email,
+				provider: UserProvider.GOOGLE,
+				role: UserRole.USER,
+				isVerified: true,
+				status: UserStatus.ACTIVE,
+			});
+		}
+
+		if (user.status !== UserStatus.ACTIVE)
+			throw new UnauthorizedException('Account is not active');
+
+		return {
+			...this.tokenService.generateTokens({
+				userId: user._id.toString(),
+				role: user.role as UserRole,
+			}),
+			profileComplete: !!user.phone,
+		};
 	}
 
 	//* =============[ Verify Email ]=============

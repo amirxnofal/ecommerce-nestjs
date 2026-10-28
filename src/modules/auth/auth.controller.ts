@@ -34,6 +34,7 @@ import {
 	refreshSchema,
 	type verifyDto,
 	verifySchema,
+	type GoogleLoginDto,
 } from './auth.validation.js';
 
 @Controller('auth')
@@ -67,12 +68,20 @@ export class AuthController {
 		return { message: 'Registered successfully', data: user };
 	}
 
-	//* =============[ Login ]=============
+	//* =============[ Email Login ]=============
 	@Post('login')
 	@HttpCode(200)
 	async login(@Body(new CustomValidationPipe(loginSchema)) body: loginDto) {
 		const result = await this.authService.login(body);
 		return { message: 'Login successfully', data: result };
+	}
+
+	//* =============[ Google Login ]=============
+	@Post('google-login')
+	@HttpCode(200)
+	async googleLogin(@Body() body: GoogleLoginDto) {
+		const data = await this.authService.googleLogin(body);
+		return { message: 'Login successfully', data };
 	}
 
 	//* =============[ Verify Email ]=============

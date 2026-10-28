@@ -31,8 +31,6 @@ export const registerSchema = z
 		message: 'Passwords do not match',
 	});
 
-export type RegisterDto = z.infer<typeof registerSchema>;
-
 export const loginSchema = z.strictObject({
 	email: z.string().email(),
 	password: z
@@ -48,26 +46,18 @@ export const loginSchema = z.strictObject({
 		),
 });
 
-export type loginDto = z.infer<typeof loginSchema>;
-
 export const verifySchema = z.strictObject({
 	email: z.string().email(),
 	otp: z.string().length(6),
 });
 
-export type verifyDto = z.infer<typeof verifySchema>;
-
 export const resendOtpSchema = z.strictObject({
 	email: z.string().trim().toLowerCase().email('Invalid email format'),
 });
 
-export type resendOtpDto = z.infer<typeof resendOtpSchema>;
-
 export const forgetPasswordSchema = z.strictObject({
 	email: z.string().trim().toLowerCase().email('Invalid email format'),
 });
-
-export type forgetPasswordDto = z.infer<typeof forgetPasswordSchema>;
 
 export const resetPasswordSchema = z
 	.strictObject({
@@ -83,10 +73,20 @@ export const resetPasswordSchema = z
 		path: ['confirmNewPassword'],
 	});
 
-export type resetPasswordDto = z.infer<typeof resetPasswordSchema>;
-
 export const refreshSchema = z.strictObject({
 	refreshToken: z.string().min(1, 'Refresh token is required'),
 });
 
+export const googleLoginSchema = z.object({
+	idToken: z.string().trim().min(1, 'idToken is required'),
+});
+
+//* ------------------------ TYPES ------------------------ *//
+export type GoogleLoginDto = z.infer<typeof googleLoginSchema>;
 export type refreshDto = z.infer<typeof refreshSchema>;
+export type resetPasswordDto = z.infer<typeof resetPasswordSchema>;
+export type forgetPasswordDto = z.infer<typeof forgetPasswordSchema>;
+export type resendOtpDto = z.infer<typeof resendOtpSchema>;
+export type verifyDto = z.infer<typeof verifySchema>;
+export type RegisterDto = z.infer<typeof registerSchema>;
+export type loginDto = z.infer<typeof loginSchema>;

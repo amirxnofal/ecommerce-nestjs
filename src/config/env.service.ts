@@ -43,8 +43,12 @@ export const env = {
 	get googleAppPassword() {
 		return process.env.GOOGLE_APP_PASSWORD;
 	},
-	
+
 	get emailSenderName() {
 		return process.env.EMAIL_SENDER_NAME;
+	},
+
+	get googleClientId() {
+		return process.env.GOOGLE_CLIENT_ID;
 	},
 };

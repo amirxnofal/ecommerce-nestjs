@@ -22,10 +22,21 @@ export class User {
 	})
 	email: string;
 
-	@Prop({ type: String, required: true, select: false })
+	@Prop({
+		type: String,
+		required: function () {
+			return this.provider === UserProvider.LOCAL;
+		},
+		select: false,
+	})
 	password: string;
 
-	@Prop({ type: String, required: true })
+	@Prop({
+		type: String,
+		required: function () {
+			return this.provider === UserProvider.LOCAL;
+		},
+	})
 	phone: string;
 
 	@Prop({
