@@ -41,6 +41,6 @@ categorySchema.pre('validate', function () {
 	}
 });
 
-export const categoryModel = MongooseModule.forFeature([
+export const CategoryModel = MongooseModule.forFeature([
 	{ name: Category.name, schema: categorySchema },
 ]);

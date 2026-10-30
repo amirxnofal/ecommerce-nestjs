@@ -35,19 +35,19 @@ export class Brand {
 	restoredAt: Date;
 }
 
-export const brandSchema = SchemaFactory.createForClass(Brand);
+export const BrandSchema = SchemaFactory.createForClass(Brand);
 
-export const brandModel = MongooseModule.forFeatureAsync([
+export const BrandModel = MongooseModule.forFeatureAsync([
 	{
 		name: Brand.name,
 		useFactory: () => {
-			brandSchema.pre('save', function (this) {
+			BrandSchema.pre('save', function (this) {
 				if (this.isModified('name')) {
 					this.slug = generateSlug(this.name);
 				}
 			});
 
-			return brandSchema;
+			return BrandSchema;
 		},
 	},
 ]);
