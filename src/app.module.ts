@@ -10,6 +10,8 @@ import { Connection } from 'mongoose';
 import { SecurityService } from './common/services/security/security.service.js';
 import { UsersModule } from './modules/user/user.module.js';
 import { BrandModule } from './modules/brand/brand.module.js';
+import { CategoryModule } from './modules/category/category.module.js';
+import { SubCategoryModule } from './modules/subCategory/subCategory.module.js';
 
 @Module({
 	controllers: [AppController],
@@ -48,6 +50,8 @@ import { BrandModule } from './modules/brand/brand.module.js';
 		AuthModule,
 		UsersModule,
 		BrandModule,
+		CategoryModule,
+		SubCategoryModule,
 	],
 })
 export class AppModule {}
