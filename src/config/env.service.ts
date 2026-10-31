@@ -51,4 +51,14 @@ export const env = {
 	get googleClientId() {
 		return process.env.GOOGLE_CLIENT_ID;
 	},
+
+	get cloudinaryCloudName() {
+		return process.env.CLOUDINARY_CLOUD_NAME as string;
+	},
+	get cloudinaryApiKey() {
+		return process.env.CLOUDINARY_API_KEY as string;
+	},
+	get cloudinaryApiSecret() {
+		return process.env.CLOUDINARY_API_SECRET as string;
+	},
 };

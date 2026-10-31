@@ -1,0 +1,14 @@
+import { v2 as cloudinary } from 'cloudinary';
+import { env } from '../../../config/env.service.js';
+
+export const CLOUDINARY = 'CLOUDINARY';
+
+export const CloudinaryProvider = {
+	provide: CLOUDINARY,
+	useFactory: () =>
+		cloudinary.config({
+			cloud_name: env.cloudinaryCloudName,
+			api_key: env.cloudinaryApiKey,
+			api_secret: env.cloudinaryApiSecret,
+		}),
+};

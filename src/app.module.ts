@@ -12,10 +12,12 @@ import { UsersModule } from './modules/user/user.module.js';
 import { BrandModule } from './modules/brand/brand.module.js';
 import { CategoryModule } from './modules/category/category.module.js';
 import { SubCategoryModule } from './modules/subCategory/subCategory.module.js';
+import { CloudinaryService } from './common/services/cloudinary/cloudinary.service.js';
+import { CloudinaryModule } from './common/services/cloudinary/cloudinary.module.js';
 
 @Module({
 	controllers: [AppController],
-	providers: [AppService, SecurityService],
+	providers: [AppService, SecurityService, CloudinaryService],
 	imports: [
 		ConfigModule.forRoot({
 			envFilePath: ['.env.dev', '.env.prod'],
