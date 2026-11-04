@@ -19,6 +19,9 @@ import type { CreateBrandDto, UpdateBrandDto } from './brand.validation.js';
 import { createBrandSchema, updateBrandSchema } from './brand.validation.js';
 import { Types } from 'mongoose';
 import type { Request } from 'express';
+import { RolesGuard } from '../../common/guard/roles/roles.guard.js';
+import { Roles } from '../../common/decorators/roles/roles.decorator.js';
+import { UserRole } from '../../common/enums/user.enum.js';
 
 @Controller('brand')
 export class BrandController {
@@ -32,7 +35,8 @@ export class BrandController {
 
 	//* ------------------------ CREATE BRAND ------------------------ *//
 	@Post()
-	@UseGuards(AuthGuard)
+	@UseGuards(AuthGuard, RolesGuard)
+	@Roles([UserRole.USER])
 	@UseInterceptors(FileInterceptor('image', imageUploadOptions))
 	createBrand(
 		@Body(new CustomValidationPipe(createBrandSchema)) body: CreateBrandDto,
