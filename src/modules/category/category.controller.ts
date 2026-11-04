@@ -27,6 +27,9 @@ import { AuthGuard } from '../../common/guard/auth/auth.guard.js';
 import { imageUploadOptions } from '../../common/utils/upload.options.js';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Types } from 'mongoose';
+import { RolesGuard } from '../../common/guard/roles/roles.guard.js';
+import { UserRole } from '../../common/enums/user.enum.js';
+import { Roles } from '../../common/decorators/roles/roles.decorator.js';
 
 @Controller('categories')
 export class CategoryController {
@@ -49,7 +52,8 @@ export class CategoryController {
 
 	//* POST /categories
 	@Post()
-	@UseGuards(AuthGuard)
+	@UseGuards(AuthGuard, RolesGuard)
+	@Roles([UserRole.ADMIN])
 	@UseInterceptors(FileInterceptor('image', imageUploadOptions))
 	createCategory(
 		@Body(new CustomValidationPipe(createCategorySchema))
@@ -57,13 +61,13 @@ export class CategoryController {
 		@Req() req: Request & { user: { userId: Types.ObjectId } },
 		@UploadedFile() file?: Express.Multer.File,
 	) {
-
 		return this.categoryService.createCategory(body, req.user, file);
 	}
 
 	//* PATCH /categories/:categoryId
 	@Patch(':categoryId')
-	@UseGuards(AuthGuard)
+	@UseGuards(AuthGuard, RolesGuard)
+	@Roles([UserRole.ADMIN])
 	@UseInterceptors(FileInterceptor('image', imageUploadOptions))
 	updateCategory(
 		@Param(new CustomValidationPipe(categoryIdParamSchema))
@@ -82,7 +86,8 @@ export class CategoryController {
 	//* DELETE /categories/:categoryId
 	@Delete(':categoryId')
 	@HttpCode(HttpStatus.OK)
-	@UseGuards(AuthGuard)
+	@UseGuards(AuthGuard, RolesGuard)
+	@Roles([UserRole.ADMIN])
 	deleteCategory(
 		@Param(new CustomValidationPipe(categoryIdParamSchema))
 		params: CategoryIdParam,

@@ -36,7 +36,7 @@ export class BrandController {
 	//* ------------------------ CREATE BRAND ------------------------ *//
 	@Post()
 	@UseGuards(AuthGuard, RolesGuard)
-	@Roles([UserRole.USER])
+	@Roles([UserRole.ADMIN])
 	@UseInterceptors(FileInterceptor('image', imageUploadOptions))
 	createBrand(
 		@Body(new CustomValidationPipe(createBrandSchema)) body: CreateBrandDto,
@@ -48,7 +48,8 @@ export class BrandController {
 
 	//* ------------------------ UPDATE BRAND ------------------------ *//
 	@Patch(':slug')
-	@UseGuards(AuthGuard)
+	@UseGuards(AuthGuard, RolesGuard)
+	@Roles([UserRole.ADMIN])
 	@UseInterceptors(FileInterceptor('image', imageUploadOptions))
 	updateBrand(
 		@Param('slug') slug: string,
@@ -60,14 +61,16 @@ export class BrandController {
 
 	//* ------------------------ DELETE BRAND ------------------------ *//
 	@Patch(':slug/delete')
-	@UseGuards(AuthGuard)
+	@UseGuards(AuthGuard, RolesGuard)
+	@Roles([UserRole.ADMIN])
 	deleteBrand(@Param('slug') slug: string) {
 		return this.brandService.deleteBrand(slug);
 	}
 
 	//* ------------------------ RESTORE BRAND ------------------------ *//
 	@Patch(':slug/restore')
-	@UseGuards(AuthGuard)
+	@UseGuards(AuthGuard, RolesGuard)
+	@Roles([UserRole.ADMIN])
 	restoreBrand(@Param('slug') slug: string) {
 		return this.brandService.restoreBrand(slug);
 	}

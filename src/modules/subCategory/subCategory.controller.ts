@@ -31,6 +31,9 @@ import {
 import { CustomValidationPipe } from '../../common/pipe/validation.pipe.js';
 import { AuthGuard } from '../../common/guard/auth/auth.guard.js';
 import { imageUploadOptions } from '../../common/utils/upload.options.js';
+import { RolesGuard } from '../../common/guard/roles/roles.guard.js';
+import { UserRole } from '../../common/enums/user.enum.js';
+import { Roles } from '../../common/decorators/roles/roles.decorator.js';
 
 @Controller('subcategories')
 export class SubCategoryController {
@@ -56,7 +59,8 @@ export class SubCategoryController {
 
 	//* POST /subcategories
 	@Post()
-	@UseGuards(AuthGuard)
+	@UseGuards(AuthGuard, RolesGuard)
+	@Roles([UserRole.ADMIN])
 	@UseInterceptors(FileInterceptor('image', imageUploadOptions))
 	createSubCategory(
 		@Body(new CustomValidationPipe(createSubCategorySchema))
@@ -73,7 +77,8 @@ export class SubCategoryController {
 
 	//* PATCH /subcategories/:subCategoryId
 	@Patch(':subCategoryId')
-	@UseGuards(AuthGuard)
+	@UseGuards(AuthGuard, RolesGuard)
+	@Roles([UserRole.ADMIN])
 	@UseInterceptors(FileInterceptor('image', imageUploadOptions))
 	updateSubCategory(
 		@Param(new CustomValidationPipe(subCategoryIdParamSchema))
@@ -92,7 +97,8 @@ export class SubCategoryController {
 	//* DELETE /subcategories/:subCategoryId
 	@Delete(':subCategoryId')
 	@HttpCode(HttpStatus.OK)
-	@UseGuards(AuthGuard)
+	@UseGuards(AuthGuard, RolesGuard)
+	@Roles([UserRole.ADMIN])
 	deleteSubCategory(
 		@Param(new CustomValidationPipe(subCategoryIdParamSchema))
 		params: SubCategoryIdParam,
