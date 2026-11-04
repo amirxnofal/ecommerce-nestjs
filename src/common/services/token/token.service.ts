@@ -41,6 +41,10 @@ export class TokenService {
 			access: env.adminAccessSecret,
 			refresh: env.adminRefreshSecret,
 		},
+		[UserRole.SELLER]: {
+			access: env.adminAccessSecret,
+			refresh: env.adminRefreshSecret,
+		},
 	};
 
 	private getConfig(type: TokenTypeEnum, role: UserRole): TokenConfig {
