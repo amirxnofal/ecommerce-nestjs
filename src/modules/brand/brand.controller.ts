@@ -22,6 +22,7 @@ import type { Request } from 'express';
 import { RolesGuard } from '../../common/guard/roles/roles.guard.js';
 import { Roles } from '../../common/decorators/roles/roles.decorator.js';
 import { UserRole } from '../../common/enums/user.enum.js';
+import { ImageValidationPipe } from '../../common/pipe/image-validation/image-validation.pipe.js';
 
 @Controller('brand')
 export class BrandController {
@@ -41,7 +42,7 @@ export class BrandController {
 	createBrand(
 		@Body(new CustomValidationPipe(createBrandSchema)) body: CreateBrandDto,
 		@Req() req: Request & { user: { userId: Types.ObjectId } },
-		@UploadedFile() file?: Express.Multer.File,
+		@UploadedFile(ImageValidationPipe) file: Express.Multer.File,
 	) {
 		return this.brandService.createBrand(req.user.userId, body.name, file);
 	}
@@ -54,7 +55,7 @@ export class BrandController {
 	updateBrand(
 		@Param('slug') slug: string,
 		@Body(new CustomValidationPipe(updateBrandSchema)) body: UpdateBrandDto,
-		@UploadedFile() file?: Express.Multer.File,
+		@UploadedFile(ImageValidationPipe) file?: Express.Multer.File,
 	) {
 		return this.brandService.updateBrand(slug, body.name, file);
 	}

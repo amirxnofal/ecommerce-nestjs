@@ -2,36 +2,27 @@ import {
 	BadRequestException,
 	ConflictException,
 	Injectable,
+	Logger,
 	NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { HydratedDocument, Model, Types } from 'mongoose';
 import { unlink } from 'node:fs/promises';
 import { Brand } from '../../database/model/brand.model.js';
 import { IBrand } from '../../common/interfaces/brand.interface.js';
 import { generateSlug } from '../../common/utils/slug.utils.js';
+import { CloudinaryService } from '../../common/services/cloudinary/cloudinary.service.js';
+import { CLOUDINARY_FOLDERS } from '../../common/constants/cloudinary.constants.js';
+import { UploadApiResponse } from 'cloudinary';
+import { IImage } from '../../common/interfaces/image.interface.js';
 
 @Injectable()
 export class BrandService {
-	//* ------------------------ IMAGE HELPERS ------------------------ *//
-	private async uploadImage(file?: Express.Multer.File) {
-		if (!file) return console.log('No File Uploaded');
-		console.log('FROM UPLOAD METHOD: ', file.path);
-		return file.path;
-	}
-	private async deleteImage(path: string | undefined) {
-		if (!path) return;
-
-		try {
-			await unlink(path);
-		} catch {
-			// Ignore errors if the file doesn't exist or can't be deleted
-		}
-	}
 	//* --------------------------------------------------------------- *//
-
+	private readonly logger = new Logger(Brand.name);
 	constructor(
 		@InjectModel(Brand.name) private readonly brandModel: Model<IBrand>,
+		private readonly cloudinary: CloudinaryService,
 	) {}
 
 	async getAllBrands() {
@@ -45,31 +36,45 @@ export class BrandService {
 	async createBrand(
 		userId: Types.ObjectId,
 		name: string,
-		file?: Express.Multer.File,
-	) {
+		file: Express.Multer.File,
+	): Promise<HydratedDocument<IBrand>> {
 		const slug = generateSlug(name);
 		if (!slug) {
-			await this.deleteImage(file?.path);
 			throw new BadRequestException('invalid brand name');
 		}
 
 		const exists = await this.brandModel.exists({ slug });
 		if (exists) {
-			await this.deleteImage(file?.path);
 			throw new ConflictException('brand already exists');
 		}
 
-		const image = file ? await this.uploadImage(file) : undefined;
+		const _id = new Types.ObjectId();
+
+		let uploadedImage: UploadApiResponse;
+		try {
+			uploadedImage = await this.cloudinary.uploadFile(
+				file,
+				CLOUDINARY_FOLDERS.BRAND.LOGO(_id.toString()),
+			);
+		} catch (error) {
+			throw new BadRequestException('Failed to upload image');
+		}
 
 		try {
 			return await this.brandModel.create({
+				_id,
 				name,
 				slug,
-				image: image ?? undefined,
 				createdBy: userId,
+				image: {
+					secure_url: uploadedImage.secure_url,
+					public_id: uploadedImage.public_id,
+				},
 			});
 		} catch (error) {
-			await this.deleteImage(file?.path);
+			await this.cloudinary
+				.deleteFile(uploadedImage.public_id)
+				.catch((e) => this.logger.error('Failed to cleanup image', e));
 
 			if ((error as { code?: number }).code === 11000) {
 				throw new ConflictException('brand already exists');
@@ -79,58 +84,76 @@ export class BrandService {
 	}
 
 	async updateBrand(slug: string, name?: string, file?: Express.Multer.File) {
-		const brand = await this.brandModel.findOne({
-			slug,
-			deletedAt: { $exists: false },
-		});
-		if (!brand) {
-			await this.deleteImage(file?.path);
-			throw new NotFoundException('brand not found');
-		}
-
 		if (!name && !file) {
 			throw new BadRequestException('No data provided for update');
 		}
 
+		const brand = await this.brandModel.findOne({
+			slug,
+			deletedAt: { $exists: false },
+		});
+		if (!brand) throw new NotFoundException('brand not found');
+
 		if (name) {
 			const newSlug = generateSlug(name);
-			if (!newSlug) {
-				await this.deleteImage(file?.path);
-				throw new BadRequestException('invalid brand name');
-			}
+			if (!newSlug) throw new BadRequestException('invalid brand name');
+
 			if (newSlug !== brand.slug) {
 				const exists = await this.brandModel.exists({ slug: newSlug });
-				if (exists) {
-					await this.deleteImage(file?.path);
+				if (exists)
 					throw new ConflictException('brand name already exists');
-				}
 			}
 			brand.name = name;
 			brand.slug = newSlug;
 		}
 
-		const oldImage = brand.image;
+		const oldPublicId = brand.image?.public_id;
+
+		let newImage: IImage | undefined;
 		if (file) {
-			const image = await this.uploadImage(file);
-			if (image) brand.image = image;
+			try {
+				const uploaded = await this.cloudinary.uploadFile(
+					file,
+					CLOUDINARY_FOLDERS.BRAND.LOGO(brand._id.toString()),
+				);
+				newImage = {
+					secure_url: uploaded.secure_url,
+					public_id: uploaded.public_id,
+				};
+			} catch (error) {
+				this.logger.error('Brand logo upload failed', error);
+				throw new BadRequestException('Failed to upload image');
+			}
+			brand.image = newImage;
 		}
 
 		try {
 			await brand.save();
 		} catch (error) {
-			await this.deleteImage(file?.path);
+			if (newImage) {
+				await this.cloudinary
+					.deleteFile(newImage.public_id)
+					.catch((e) =>
+						this.logger.error('Failed to cleanup new image', e),
+					);
+			}
 			if ((error as { code?: number }).code === 11000) {
 				throw new ConflictException('brand name already exists');
 			}
 			throw error;
 		}
 
-		if (file && oldImage && oldImage !== brand.image) {
-			await this.deleteImage(oldImage);
+		if (newImage && oldPublicId) {
+			await this.cloudinary
+				.deleteFile(oldPublicId)
+				.catch((e) =>
+					this.logger.error('Failed to cleanup old image', e),
+				);
 		}
+
 		return brand;
 	}
-
+	
 	async deleteBrand(slug: string) {
 		const brand = await this.brandModel.findOneAndUpdate(
 			{ slug, deletedAt: { $exists: false } },
