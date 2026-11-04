@@ -30,6 +30,7 @@ import { Types } from 'mongoose';
 import { RolesGuard } from '../../common/guard/roles/roles.guard.js';
 import { UserRole } from '../../common/enums/user.enum.js';
 import { Roles } from '../../common/decorators/roles/roles.decorator.js';
+import { ImageValidationPipe } from '../../common/pipe/image-validation/image-validation.pipe.js';
 
 @Controller('categories')
 export class CategoryController {
@@ -59,7 +60,7 @@ export class CategoryController {
 		@Body(new CustomValidationPipe(createCategorySchema))
 		body: CreateCategoryDto,
 		@Req() req: Request & { user: { userId: Types.ObjectId } },
-		@UploadedFile() file?: Express.Multer.File,
+		@UploadedFile(ImageValidationPipe) file?: Express.Multer.File,
 	) {
 		return this.categoryService.createCategory(body, req.user, file);
 	}
@@ -74,7 +75,7 @@ export class CategoryController {
 		params: CategoryIdParam,
 		@Body(new CustomValidationPipe(updateCategorySchema))
 		body: UpdateCategoryDto,
-		@UploadedFile() file?: Express.Multer.File,
+		@UploadedFile(ImageValidationPipe) file?: Express.Multer.File,
 	) {
 		return this.categoryService.updateCategory(
 			params.categoryId,

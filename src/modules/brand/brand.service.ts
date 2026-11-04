@@ -108,7 +108,6 @@ export class BrandService {
 		}
 
 		const oldPublicId = brand.image?.public_id;
-
 		let newImage: IImage | undefined;
 		if (file) {
 			try {
@@ -153,7 +152,7 @@ export class BrandService {
 
 		return brand;
 	}
-	
+
 	async deleteBrand(slug: string) {
 		const brand = await this.brandModel.findOneAndUpdate(
 			{ slug, deletedAt: { $exists: false } },

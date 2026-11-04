@@ -2,6 +2,7 @@ import { Types } from 'mongoose';
 import { MongooseModule, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { generateSlug } from '../../common/utils/slug.utils.js';
 import type { IImage } from '../../common/interfaces/image.interface.js';
+import { ImageSchema } from './image.model.js';
 
 @Schema({ timestamps: true })
 export class Category {
@@ -14,7 +15,7 @@ export class Category {
 	@Prop({ trim: true })
 	description?: string;
 
-	@Prop({ type: Object })
+	@Prop({ type: ImageSchema })
 	categoryImage?: IImage;
 
 	@Prop({ type: Types.ObjectId, ref: 'User', required: true })
