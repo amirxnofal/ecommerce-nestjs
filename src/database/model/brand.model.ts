@@ -2,9 +2,10 @@ import { MongooseModule, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IBrand } from '../../common/interfaces/brand.interface.js';
 import { HydratedDocument } from 'mongoose';
 import { generateSlug } from '../../common/utils/slug.utils.js';
+import type { IImage } from '../../common/interfaces/image.interface.js';
+import { ImageSchema } from './image.model.js';
 
 export type BrandDocument = HydratedDocument<IBrand>;
-
 @Schema()
 export class Brand {
 	@Prop({ type: String, required: true })
@@ -13,8 +14,8 @@ export class Brand {
 	@Prop({ type: String, unique: true })
 	slug: string;
 
-	@Prop({ type: String })
-	image: string;
+	@Prop({ type: ImageSchema })
+	image: IImage;
 
 	@Prop({ type: String, required: true, ref: 'User' })
 	createdBy: string;
