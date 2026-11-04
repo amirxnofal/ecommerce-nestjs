@@ -6,10 +6,7 @@ import {
 	HttpCode,
 	Patch,
 	Req,
-	UnsupportedMediaTypeException,
-	UploadedFile,
 	UseGuards,
-	UseInterceptors,
 } from '@nestjs/common';
 import 'multer';
 import { UsersService } from './user.service.js';
@@ -24,7 +21,6 @@ import {
 	type UpdateProfileDto,
 	updateProfileSchema,
 } from './user.validation.js';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(AuthGuard)
 @Controller('users')
@@ -40,33 +36,14 @@ export class UsersController {
 
 	//* =============[ Update Me ]=============
 	@Patch('me')
-	@UseInterceptors(
-		FileInterceptor('image', {
-			dest: './uploads',
-			fileFilter: (req, file, callback) => {
-				if (!file.mimetype.match(/^image\/(png|jpeg)$/)) {
-					return callback(
-						new UnsupportedMediaTypeException(
-							'only jpeg & png are supported',
-						),
-						false,
-					);
-				}
-				callback(null, true);
-			},
-			limits: { fileSize: 5 * 1024 * 1024 },
-		}),
-	)
 	async updateMe(
 		@Req() req: AuthRequest,
 		@Body(new CustomValidationPipe(updateProfileSchema))
 		body: UpdateProfileDto,
-		@UploadedFile() file?: Express.Multer.File ,
 	) {
 		const user = await this.usersService.updateMe(
 			req.user!.userId,
 			body,
-			file,
 		);
 		return { message: 'Profile updated', data: user };
 	}

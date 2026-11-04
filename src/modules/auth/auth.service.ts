@@ -51,7 +51,7 @@ export class AuthService {
 	) {}
 
 	//* =============[ Register ]=============
-	async register(data: RegisterDto, file?: Express.Multer.File) {
+	async register(data: RegisterDto) {
 		const { name, email, password, phone, gender } = data;
 
 		const existingUser = await this.model.findOne({ email });

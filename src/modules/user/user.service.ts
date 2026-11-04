@@ -55,13 +55,9 @@ export class UsersService {
 	async updateMe(
 		userId: string,
 		data: UpdateProfileDto,
-		file?: Express.Multer.File,
 	) {
 		const user = await this.findActive(userId);
 
-		if (file) {
-			console.log(file.originalname);
-		}
 		Object.assign(user, data);
 		await user.save();
 
