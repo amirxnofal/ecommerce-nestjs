@@ -10,11 +10,14 @@ export class CloudinaryService {
 	//* <--- Upload image --->
 	uploadFile(
 		file: Express.Multer.File,
-		folder = 'uploads',
+		folder: string,
 	): Promise<UploadApiResponse> {
+		if (!file || file.size == 0)
+			throw new BadRequestException('Image file is required');
+
 		return new Promise((resolve, reject) => {
 			const stream = cloudinary.uploader.upload_stream(
-				{ folder, resource_type: 'auto' },
+				{ folder, resource_type: 'image' },
 				(
 					error?: UploadApiErrorResponse,
 					result?: UploadApiResponse,
