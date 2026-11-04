@@ -34,6 +34,7 @@ import { imageUploadOptions } from '../../common/utils/upload.options.js';
 import { RolesGuard } from '../../common/guard/roles/roles.guard.js';
 import { UserRole } from '../../common/enums/user.enum.js';
 import { Roles } from '../../common/decorators/roles/roles.decorator.js';
+import { ImageValidationPipe } from '../../common/pipe/image-validation/image-validation.pipe.js';
 
 @Controller('subcategories')
 export class SubCategoryController {
@@ -66,7 +67,7 @@ export class SubCategoryController {
 		@Body(new CustomValidationPipe(createSubCategorySchema))
 		body: CreateSubCategoryDto,
 		@Req() req: Request & { user: { userId: Types.ObjectId } },
-		@UploadedFile() file?: Express.Multer.File,
+		@UploadedFile(ImageValidationPipe) file: Express.Multer.File,
 	) {
 		return this.subCategoryService.createSubCategory(
 			body,
@@ -85,7 +86,7 @@ export class SubCategoryController {
 		params: SubCategoryIdParam,
 		@Body(new CustomValidationPipe(updateSubCategorySchema))
 		body: UpdateSubCategoryDto,
-		@UploadedFile() file?: Express.Multer.File,
+		@UploadedFile(ImageValidationPipe) file?: Express.Multer.File,
 	) {
 		return this.subCategoryService.updateSubCategory(
 			params.subCategoryId,

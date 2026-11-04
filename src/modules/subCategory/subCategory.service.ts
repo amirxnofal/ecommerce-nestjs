@@ -1,6 +1,8 @@
 import {
+	BadRequestException,
 	ConflictException,
 	Injectable,
+	Logger,
 	NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -13,16 +15,21 @@ import {
 	CreateSubCategoryDto,
 	UpdateSubCategoryDto,
 } from './subCategory.validation.js';
+import { UploadApiResponse } from 'cloudinary';
+import { CLOUDINARY_FOLDERS } from '../../common/constants/cloudinary.constants.js';
+import { IImage } from '../../common/interfaces/image.interface.js';
+import { CloudinaryService } from '../../common/services/cloudinary/cloudinary.service.js';
 
 @Injectable()
 export class SubCategoryService {
+	private readonly logger = new Logger(SubCategory.name);
 	constructor(
 		@InjectModel(Category.name)
 		private readonly categoryModel: Model<ICategory>,
 		@InjectModel(SubCategory.name)
 		private readonly subCategoryModel: Model<ISubCategory>,
+		private readonly cloudinary: CloudinaryService
 	) {}
-	private readonly cloudinary: any;
 
 	//* Get all subcategories (optionally filtered by category)
 	async getSubCategories(categoryId?: string) {
@@ -45,11 +52,11 @@ export class SubCategoryService {
 		return { subCategory };
 	}
 
-	//* Add new subcategory
+	//* Create
 	async createSubCategory(
 		data: CreateSubCategoryDto,
 		createdBy: Types.ObjectId,
-		file?: any,
+		file: Express.Multer.File,
 	) {
 		const { name, description, category } = data;
 
@@ -70,35 +77,43 @@ export class SubCategoryService {
 			);
 		}
 
-		let image: { public_id: string; secure_url: string } | undefined;
-		if (file) {
-			// const uploadResult = await this.cloudinary.upload(
-			// 	file.path,
-			// 	'subcategories/subCategoryImage',
-			// );
-			const uploadResult = {
-				public_id: 'subcategories/subCategoryImage',
-				secure_url: 'subcategories/subCategoryImage',
-			};
+		const _id = new Types.ObjectId();
 
-			image = {
-				public_id: uploadResult.public_id,
-				secure_url: uploadResult.secure_url,
-			};
+		let uploaded: UploadApiResponse | undefined;
+		if (file) {
+			try {
+				uploaded = await this.cloudinary.uploadFile(
+					file,
+					CLOUDINARY_FOLDERS.SUBCATEGORY.IMAGE(_id.toString()),
+				);
+			} catch (error) {
+				this.logger.error('SubCategory image upload failed', error);
+				throw new BadRequestException('Failed to upload image');
+			}
 		}
 
 		try {
 			const subCategory = await this.subCategoryModel.create({
+				_id,
 				name,
 				description,
 				category,
-				subCategoryImage: image,
+				subCategoryImage: uploaded && {
+					public_id: uploaded.public_id,
+					secure_url: uploaded.secure_url,
+				},
 				createdBy,
 			});
 			return { subCategory };
-		} catch (error: any) {
-			if (image) await this.cloudinary.destroy(image.public_id);
-			if (error.code === 11000) {
+		} catch (error) {
+			if (uploaded) {
+				await this.cloudinary
+					.deleteFile(uploaded.public_id)
+					.catch((e: any) =>
+						this.logger.error('Failed to cleanup image', e),
+					);
+			}
+			if ((error as { code?: number }).code === 11000) {
 				throw new ConflictException(
 					'SubCategory already exist in this category!',
 				);
@@ -107,11 +122,11 @@ export class SubCategoryService {
 		}
 	}
 
-	//* Edit subcategory
+	//* Update
 	async updateSubCategory(
 		subCategoryId: string,
 		data: UpdateSubCategoryDto,
-		file?: any,
+		file?: Express.Multer.File,
 	) {
 		const { name, description } = data;
 
@@ -138,29 +153,38 @@ export class SubCategoryService {
 		if (description !== undefined) subCategory.description = description;
 
 		const oldPublicId = subCategory.subCategoryImage?.public_id;
-		let newPublicId: string | null = null;
 
+		let newImage: IImage | undefined;
 		if (file) {
-			// const uploadResult = await this.cloudinary.upload(
-			// 	file.path,
-			// 	'subcategories/subCategoryImage',
-			// );
-			const uploadResult = {
-				public_id: 'subcategories/subCategoryImage',
-				secure_url: 'subcategories/subCategoryImage',
-			};
-			newPublicId = uploadResult.public_id;
-			subCategory.subCategoryImage = {
-				public_id: uploadResult.public_id,
-				secure_url: uploadResult.secure_url,
-			};
+			try {
+				const uploaded = await this.cloudinary.uploadFile(
+					file,
+					CLOUDINARY_FOLDERS.SUBCATEGORY.IMAGE(
+						subCategory._id.toString(),
+					),
+				);
+				newImage = {
+					secure_url: uploaded.secure_url,
+					public_id: uploaded.public_id,
+				};
+			} catch (error) {
+				this.logger.error('SubCategory image upload failed', error);
+				throw new BadRequestException('Failed to upload image');
+			}
+			subCategory.subCategoryImage = newImage;
 		}
 
 		try {
 			await subCategory.save();
-		} catch (error: any) {
-			// if (newPublicId) await this.cloudinary.destroy(newPublicId);
-			if (error.code === 11000) {
+		} catch (error) {
+			if (newImage) {
+				await this.cloudinary
+					.deleteFile(newImage.public_id)
+					.catch((e: any) =>
+						this.logger.error('Failed to cleanup new image', e),
+					);
+			}
+			if ((error as { code?: number }).code === 11000) {
 				throw new ConflictException(
 					'SubCategory already exist in this category!',
 				);
@@ -168,9 +192,12 @@ export class SubCategoryService {
 			throw error;
 		}
 
-		// remove the old image only after a successful save
-		if (newPublicId && oldPublicId) {
-			// await this.cloudinary.destroy(oldPublicId);
+		if (newImage && oldPublicId) {
+			await this.cloudinary
+				.deleteFile(oldPublicId)
+				.catch((e: any) =>
+					this.logger.error('Failed to cleanup old image', e),
+				);
 		}
 
 		return { subCategory };
