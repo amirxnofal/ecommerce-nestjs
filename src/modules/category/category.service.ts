@@ -65,7 +65,7 @@ export class CategoryService {
 
 		const _id = new Types.ObjectId();
 
-		let uploadedImage: UploadApiResponse;
+		let uploadedImage: IImage;
 		try {
 			uploadedImage = await this.cloudinary.uploadFile(
 				file,
@@ -81,10 +81,7 @@ export class CategoryService {
 				_id,
 				name,
 				description,
-				categoryImage: {
-					public_id: uploadedImage.public_id,
-					secure_url: uploadedImage.secure_url,
-				},
+				categoryImage: uploadedImage,
 				createdBy: createdBy.userId,
 			});
 		} catch (error) {

@@ -28,7 +28,7 @@ export class SubCategoryService {
 		private readonly categoryModel: Model<ICategory>,
 		@InjectModel(SubCategory.name)
 		private readonly subCategoryModel: Model<ISubCategory>,
-		private readonly cloudinary: CloudinaryService
+		private readonly cloudinary: CloudinaryService,
 	) {}
 
 	//* Get all subcategories (optionally filtered by category)
@@ -79,7 +79,7 @@ export class SubCategoryService {
 
 		const _id = new Types.ObjectId();
 
-		let uploaded: UploadApiResponse | undefined;
+		let uploaded: IImage | undefined;
 		if (file) {
 			try {
 				uploaded = await this.cloudinary.uploadFile(
@@ -98,10 +98,7 @@ export class SubCategoryService {
 				name,
 				description,
 				category,
-				subCategoryImage: uploaded && {
-					public_id: uploaded.public_id,
-					secure_url: uploaded.secure_url,
-				},
+				subCategoryImage: uploaded,
 				createdBy,
 			});
 			return { subCategory };
@@ -211,7 +208,7 @@ export class SubCategoryService {
 		});
 		if (!subCategory) throw new NotFoundException('SubCategory not found!');
 
-		// TODO: block delete if it has products 
+		// TODO: block delete if it has products
 
 		subCategory.deletedAt = new Date();
 		await subCategory.save();
