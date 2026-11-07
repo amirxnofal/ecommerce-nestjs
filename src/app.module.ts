@@ -12,6 +12,7 @@ import { UsersModule } from './modules/user/user.module.js';
 import { BrandModule } from './modules/brand/brand.module.js';
 import { CategoryModule } from './modules/category/category.module.js';
 import { SubCategoryModule } from './modules/subCategory/subCategory.module.js';
+import { ProductModule } from './modules/product/product.module.js';
 
 @Module({
 	controllers: [AppController],
@@ -52,6 +53,7 @@ import { SubCategoryModule } from './modules/subCategory/subCategory.module.js';
 		BrandModule,
 		CategoryModule,
 		SubCategoryModule,
+		ProductModule,
 	],
 })
 export class AppModule {}

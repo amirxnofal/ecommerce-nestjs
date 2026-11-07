@@ -50,7 +50,7 @@ export class BrandService {
 
 		const _id = new Types.ObjectId();
 
-		let uploadedImage: UploadApiResponse;
+		let uploadedImage: IImage;
 		try {
 			uploadedImage = await this.cloudinary.uploadFile(
 				file,
@@ -66,10 +66,7 @@ export class BrandService {
 				name,
 				slug,
 				createdBy: userId,
-				image: {
-					secure_url: uploadedImage.secure_url,
-					public_id: uploadedImage.public_id,
-				},
+				image: uploadedImage,
 			});
 		} catch (error) {
 			await this.cloudinary
@@ -115,10 +112,7 @@ export class BrandService {
 					file,
 					CLOUDINARY_FOLDERS.BRAND.LOGO(brand._id.toString()),
 				);
-				newImage = {
-					secure_url: uploaded.secure_url,
-					public_id: uploaded.public_id,
-				};
+				newImage = uploaded;
 			} catch (error) {
 				this.logger.error('Brand logo upload failed', error);
 				throw new BadRequestException('Failed to upload image');
