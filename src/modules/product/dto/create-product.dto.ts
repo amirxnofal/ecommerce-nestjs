@@ -13,6 +13,7 @@ import {
 	Min,
 	MinLength,
 } from 'class-validator';
+import { IsGte } from '../../../common/decorators/gte/gte.decorator.js';
 
 export class CreateProductDto {
 	@IsString()
@@ -45,6 +46,7 @@ export class CreateProductDto {
 	discountPercentage!: number;
 
 	@IsOptional()
+	@IsGte(['originalPrice'])
 	salePrice: number;
 
 	@IsMongoId()
