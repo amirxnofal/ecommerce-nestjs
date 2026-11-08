@@ -337,7 +337,8 @@ export class ProductService {
 			{ after: true },
 		);
 		if (!product) throw new NotFoundException('Product not found');
-		return { message: 'Product deleted successfully' };
+
+		return { message: 'Product deleted successfully', slug: product.slug };
 	}
 
 	async restore(id: Types.ObjectId | string, userId: Types.ObjectId) {

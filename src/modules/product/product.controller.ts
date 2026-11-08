@@ -11,6 +11,7 @@ import {
 	Req,
 	UploadedFiles,
 	Query,
+	Inject,
 } from '@nestjs/common';
 import { ProductService } from './product.service.js';
 import { CreateProductDto } from './dto/create-product.dto.js';
@@ -27,10 +28,19 @@ import {
 	ProductFilesValidationPipe,
 } from '../../common/pipe/file-fields-validation/product-files-validation.pipe.js';
 import { PaginationQueryDto } from './dto/pagination-query.dto.js';
+import {
+	CACHE_MANAGER,
+	CacheInterceptor,
+	CacheTTL,
+} from '@nestjs/cache-manager';
+import type { Cache } from 'cache-manager';
 
 @Controller('product')
 export class ProductController {
-	constructor(private readonly productService: ProductService) {}
+	constructor(
+		private readonly productService: ProductService,
+		@Inject(CACHE_MANAGER) private cacheManager: Cache,
+	) {}
 
 	@Post()
 	@UseGuards(AuthGuard, RolesGuard)
@@ -54,13 +64,22 @@ export class ProductController {
 	}
 
 	@Get()
+	@UseInterceptors(CacheInterceptor)
+	@CacheTTL(10 * 1000)
 	findAll(@Query() query: PaginationQueryDto) {
 		return this.productService.findAll(query);
 	}
 
 	@Get(':slug')
-	findOne(@Param('slug') slug: string) {
-		return this.productService.findOne(slug);
+	async findOne(@Param('slug') slug: string) {
+		const key = `product:${slug}`;
+
+		const cached = await this.cacheManager.get(key);
+		if (cached) return cached;
+
+		const product = await this.productService.findOne(slug);
+		await this.cacheManager.set(key, product, 5 * 60 * 1000);
+		return product;
 	}
 
 	@Patch(':productId')
@@ -75,36 +94,42 @@ export class ProductController {
 			imageUploadOptions,
 		),
 	)
-	update(
+	async update(
 		@Param('productId') productId: string,
 		@Body() body: UpdateProductDto,
 		@Req() req: Request & { user: { userId: Types.ObjectId } },
 		@UploadedFiles(new ProductFilesValidationPipe({ imageRequired: false }))
 		files?: ProductFiles,
 	) {
-		return this.productService.update(
+		const product = await this.productService.update(
 			productId,
 			body,
 			req.user.userId,
 			files,
 		);
+		await this.cacheManager.del(`product:${product.slug}`);
+		return product;
 	}
 
 	@Delete(':id/delete')
 	@UseGuards(AuthGuard, RolesGuard)
-	remove(
+	async remove(
 		@Param('id') id: string,
 		@Req() req: Request & { user: { userId: Types.ObjectId } },
 	) {
-		return this.productService.remove(id, req.user.userId);
+		const product = await this.productService.remove(id, req.user.userId);
+		await this.cacheManager.del(`product:${product.slug}`);
+		return product;
 	}
 
 	@Delete(':id/restore')
 	@UseGuards(AuthGuard, RolesGuard)
-	restore(
+	async restore(
 		@Param('id') id: string,
 		@Req() req: Request & { user: { userId: Types.ObjectId } },
 	) {
-		return this.productService.restore(id, req.user.userId);
+		const product = await this.productService.restore(id, req.user.userId);
+		await this.cacheManager.del(`product:${product.slug}`);
+		return product;
 	}
 }

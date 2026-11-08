@@ -13,6 +13,7 @@ import { BrandModule } from './modules/brand/brand.module.js';
 import { CategoryModule } from './modules/category/category.module.js';
 import { SubCategoryModule } from './modules/subCategory/subCategory.module.js';
 import { ProductModule } from './modules/product/product.module.js';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
 	controllers: [AppController],
@@ -45,9 +46,15 @@ import { ProductModule } from './modules/product/product.module.js';
 				},
 			}),
 		}),
+		
+		CacheModule.register({
+			isGlobal: true,
+			ttl: 10000, // 10 seconds
+		}),
 
 		TokenModule,
 		RedisModule,
+
 		AuthModule,
 		UsersModule,
 		BrandModule,
