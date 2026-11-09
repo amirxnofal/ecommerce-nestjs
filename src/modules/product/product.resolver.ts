@@ -71,9 +71,12 @@ export class ProductResolver {
 	@Roles([UserRole.ADMIN, UserRole.SELLER])
 	async removeProduct(
 		@Args('id', { type: () => ID }) id: string,
-		@Context() { req }: { req: { user: { _id: Types.ObjectId } } },
+		@Context('req') req: Request & { user: { userId: Types.ObjectId } },
 	) {
-		const { message } = await this.productService.remove(id, req.user._id);
+		const { message } = await this.productService.remove(
+			id,
+			req.user.userId,
+		);
 		return message;
 	}
 
@@ -85,8 +88,8 @@ export class ProductResolver {
 	@Roles([UserRole.ADMIN, UserRole.SELLER])
 	async restoreProduct(
 		@Args('id', { type: () => ID }) id: string,
-		@Context() { req }: { req: { user: { _id: Types.ObjectId } } },
+		@Context('req') req: Request & { user: { userId: Types.ObjectId } },
 	) {
-		return this.productService.restore(id, req.user._id);
+		return this.productService.restore(id, req.user.userId);
 	}
 }
