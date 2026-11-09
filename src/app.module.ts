@@ -14,6 +14,9 @@ import { CategoryModule } from './modules/category/category.module.js';
 import { SubCategoryModule } from './modules/subCategory/subCategory.module.js';
 import { ProductModule } from './modules/product/product.module.js';
 import { CacheModule } from '@nestjs/cache-manager';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { join } from 'path/win32';
 
 @Module({
 	controllers: [AppController],
@@ -46,7 +49,13 @@ import { CacheModule } from '@nestjs/cache-manager';
 				},
 			}),
 		}),
-		
+
+		GraphQLModule.forRoot<ApolloDriverConfig>({
+			driver: ApolloDriver,
+			autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+			graphiql: true,
+		}),
+
 		CacheModule.register({
 			isGlobal: true,
 			ttl: 10000, // 10 seconds

@@ -1,0 +1,68 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type ImageType {
+  public_id: String!
+  secure_url: String!
+}
+
+type RefType {
+  _id: ID!
+  name: String!
+  slug: String!
+}
+
+type ProductType {
+  _id: ID!
+  productId: String!
+  name: String!
+  description: String
+  slug: String!
+  image: ImageType!
+  gallery: [ImageType!]!
+  stock: Int!
+  rating: Float!
+  originalPrice: Float!
+  discountPercentage: Float
+  salePrice: Float
+  finalPrice: Float!
+  category: RefType
+  subCategory: RefType
+  brand: RefType
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type PageMetaType {
+  total: Int!
+  page: Int!
+  limit: Int!
+  pages: Int!
+}
+
+type ProductPagesType {
+  data: [ProductType!]!
+  meta: PageMetaType!
+}
+
+type Query {
+  """Retrieves all products"""
+  findAllProducts(page: Int = 1, limit: Int = 10): ProductPagesType!
+
+  """Retrieves a product by its slug"""
+  findProductBySlug(slug: String!): ProductType!
+}
+
+type Mutation {
+  """Soft deletes a product"""
+  removeProduct(id: ID!): String!
+
+  """Restores a soft-deleted product"""
+  restoreProduct(id: ID!): ProductType!
+}
