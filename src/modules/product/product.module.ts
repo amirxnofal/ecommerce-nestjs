@@ -8,10 +8,11 @@ import { ProductModel } from '../../database/model/product.model.js';
 import { CategoryModel } from '../../database/model/category.model.js';
 import { BrandModel } from '../../database/model/brand.model.js';
 import { subCategoryModel } from '../../database/model/subCategory.model.js';
+import { ProductResolver } from './product.resolver.js';
 
 @Module({
 	controllers: [ProductController],
-	providers: [ProductService],
+	providers: [ProductService, ProductResolver],
 	imports: [
 		TokenModule,
 		RedisModule,

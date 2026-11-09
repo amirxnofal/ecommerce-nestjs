@@ -306,8 +306,9 @@ export class ProductService {
 				body.originalPrice !== undefined ||
 				body.discountPercentage !== undefined
 			) {
-				product.salePrice = this.calcFinalPrice(
+				product.finalPrice = this.calcFinalPrice(
 					product.originalPrice,
+					product.salePrice,
 					product.discountPercentage,
 				);
 			}
@@ -349,5 +350,47 @@ export class ProductService {
 		);
 		if (!product) throw new NotFoundException('Deleted product not found');
 		return product;
+	}
+
+	//* <---------------- GQL Methods ----------------> *\\
+	async findAllByGQL({ page = 1, limit = 10 }: PaginationQueryDto) {
+		const filter = { deletedAt: null };
+
+		const [products, total] = await Promise.all([
+			this.productModel
+				.find(filter)
+				.sort({ createdAt: -1 })
+				.skip((page - 1) * limit)
+				.limit(limit)
+				.lean(),
+			this.productModel.countDocuments(filter),
+		]);
+
+		return {
+			data: products,
+			meta: { total, page, limit, pages: Math.ceil(total / limit) },
+		};
+	}
+
+	async findOneByGQL(slug: string) {
+		const product = await this.productModel.findOne({
+			slug,
+			deletedAt: null,
+		});
+
+		if (!product) throw new NotFoundException('Product not found');
+		return product;
+	}
+
+	async findRelation(
+		model: 'category' | 'subCategory' | 'brand',
+		id: Types.ObjectId,
+	) {
+		const models: Record<typeof model, Model<any>> = {
+			category: this.categoryModel,
+			subCategory: this.subCategoryModel,
+			brand: this.brandModel,
+		};
+		return models[model].findById(id, 'name slug').lean();
 	}
 }
