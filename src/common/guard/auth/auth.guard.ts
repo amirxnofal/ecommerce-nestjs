@@ -12,6 +12,8 @@ import {
 } from '../../services/token/token.service.js';
 import { TokenTypeEnum } from '../../enums/token.enum.js';
 import { UserRole } from '../../enums/user.enum.js';
+import { CTXType } from '../../interfaces/context.interface.js';
+import { GqlExecutionContext } from '@nestjs/graphql';
 
 export interface AuthUser {
 	userId: string;
@@ -30,7 +32,20 @@ export class AuthGuard implements CanActivate {
 	) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
-		const request = context.switchToHttp().getRequest<AuthRequest>();
+		let request;
+
+		switch (context.getType<CTXType>()) {
+			case 'http':
+				request = context.switchToHttp().getRequest<AuthRequest>();
+				break;
+
+			case 'graphql':
+				request = GqlExecutionContext.create(context).getContext().req as AuthRequest;
+				break;
+
+			default:
+				throw new UnauthorizedException('Invalid request type');
+		}
 
 		const [flag, token] = request.headers.authorization?.split(' ') ?? [];
 		if (flag !== 'Bearer' || !token) {
