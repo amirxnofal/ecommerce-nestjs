@@ -519,7 +519,7 @@
               "formdata": [
                 {
                   "key": "name",
-                  "value": "Product 36",
+                  "value": "Product 3712321",
                   "type": "text"
                 },
                 {
@@ -577,13 +577,13 @@
               ]
             },
             "url": {
-              "raw": "{{baseUrl}}/brand/product-69",
+              "raw": "{{baseUrl}}/brand/product-3712321",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "brand",
-                "product-69"
+                "product-3712321"
               ]
             }
           },
@@ -666,6 +666,1013 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "Category",
+      "item": [
+        {
+          "name": "All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                "{{categoryId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Sports",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Sports equipment and accessories",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/x50am/Pictures/AirPods Pro 2.jpg"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Electronic updated 1",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "description",
+                  "value": "Electronic devices and gadgets",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/x50am/Pictures/AirPods Pro 2.jpg"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                "{{categoryId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                "{{categoryId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "SubCategory",
+      "item": [
+        {
+          "name": "All SubCategories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/subcategories?category={{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subcategories"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "{{categoryId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get SubCategory by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/subcategories/6ae491764e1be0d7fcd00cfa",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subcategories",
+                "6ae491764e1be0d7fcd00cfa"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create SubCategory",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Sports1",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Sports equipment and accessories",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/x50am/Pictures/Audio & Headphones.jpg"
+                  ]
+                },
+                {
+                  "key": "category",
+                  "value": "{{categoryId}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/subcategories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subcategories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit SubCategory",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Electronic updated 1",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "description",
+                  "value": "Electronic devices and gadgets",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/x50am/Pictures/AirPods Pro 2.jpg"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/subcategories/{{subCategoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subcategories",
+                "{{subCategoryId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete SubCategory",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": []
+            },
+            "url": {
+              "raw": "{{baseUrl}}/subcategories/{{subCategoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subcategories",
+                "{{subCategoryId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Create Product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Amazon Echo Dot (5th Gen)",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Latest model of Amazon Echo Dot ",
+                  "type": "text"
+                },
+                {
+                  "key": "stock",
+                  "value": "10",
+                  "type": "text"
+                },
+                {
+                  "key": "salePrice",
+                  "value": "20000",
+                  "type": "text"
+                },
+                {
+                  "key": "originalPrice",
+                  "value": "25000",
+                  "type": "text"
+                },
+                {
+                  "key": "discountPercentage",
+                  "value": "40",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "6ae491764e1be0d7fcd00cf0",
+                  "type": "text"
+                },
+                {
+                  "key": "subCategory",
+                  "value": "6ae491764e1be0d7fcd00cfb",
+                  "type": "text"
+                },
+                {
+                  "key": "brand",
+                  "value": "6ae0bf078523d1a301fccb66",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/x50am/Pictures/Amazon Echo Dot (5th Gen).jpg"
+                  ]
+                },
+                {
+                  "key": "gallery",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/x50am/Pictures/iPhone 15 Pro (1).jpg",
+                    "/C:/Users/x50am/Pictures/iPhone 15 Pro (2).jpg",
+                    "/C:/Users/x50am/Pictures/iPhone 15 Pro (3).jpg"
+                  ],
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/product",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product?page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Product by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/iphone-15-6b1b64",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "iphone-15-6b1b64"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Edit product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "iPhone 17 Pro Max",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "description",
+                  "value": "Latest Apple smartphone with A17 Pro chip, 6.1-inch display, advanced camera system",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "stock",
+                  "value": "150",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "originalPrice",
+                  "value": "73940",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "discountPercentage",
+                  "value": "50",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "category",
+                  "value": "6ae491764e1be0d7fcd00cf0",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "subCategory",
+                  "value": "6ae491764e1be0d7fcd00cf4",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "brand",
+                  "value": "6ae0bf078523d1a301fccb66",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/x50am/Pictures/AirPods Pro 2.jpg"
+                  ],
+                  "disabled": true
+                },
+                {
+                  "key": "gallery",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/x50am/Pictures/BG_02.png",
+                    "/C:/Users/x50am/Pictures/social_media_app_banner.png",
+                    "/C:/Users/x50am/Pictures/Sony WH-1000XM5.jpg",
+                    "/C:/Users/x50am/Pictures/MacBook Air M2 - Copy.jpg",
+                    "/C:/Users/x50am/Pictures/Laptops & Computers - Copy.jpg"
+                  ],
+                  "disabled": true
+                },
+                {
+                  "key": "removeImages",
+                  "value": "ecommerce/products/6aef2b58b6fd1b4dc96b1b68/gallery/m3lnrbhxr1hryicy4ieb",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "removeImages",
+                  "value": "ecommerce/products/6aef2b58b6fd1b4dc96b1b68/gallery/m3lnrbhxr1hryicy4ieb",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "removeImages",
+                  "value": "ecommerce/products/6aef2b58b6fd1b4dc96b1b68/gallery/rlknxabcrqctmwtrvbew",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "removeImages",
+                  "value": "ecommerce/products/6aef26aef2b58b6fd1b4dc96b1b68/gallery/j4oitjhozao8dj7nx3vc",
+                  "type": "text",
+                  "disabled": true
+                },
+                {
+                  "key": "removeImages",
+                  "value": "ecommerce/products/6aef2b58b6fd1b4dc96b1b68/gallery/iv23s2fjhde6sfdhj3ke",
+                  "type": "text",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/product/cc903c",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "cc903c"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/6aef2b34b6fd1b4dc96b1b64/delete",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "6aef2b34b6fd1b4dc96b1b64",
+                "delete"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Restore Product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/product/6aef2b34b6fd1b4dc96b1b64/restore",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "product",
+                "6aef2b34b6fd1b4dc96b1b64",
+                "restore"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Coupon",
+      "item": [
+        {
+          "name": "Create Coupon",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"code\": \"SAVE-Y\",\r\n    \"discount\": 4500,\r\n    \"expire\": \"2027-01-01T00:00:00.000Z\",\r\n    \"type\": \"fixed\",\r\n    \"isActive\": true,\r\n    \"maxDiscount\": 0,\r\n    \"minOrderAmount\": 0,\r\n    // \"startsAt\": \"2026-01-01T00:00:00.000Z\",\r\n    \"usageLimit\": 100\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/coupons",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "coupons"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Coupons",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/coupons",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "coupons"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Coupon",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"discount\": 27,\r\n    \"expiresAt\": \"2027-06-01T00:00:00.000Z\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/coupons/{{couponId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "coupons",
+                "{{couponId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Soft Delete Coupon",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/coupons/{{couponId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "coupons",
+                "{{couponId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Restore Coupon",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/coupons/{{couponId}}/restore",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "coupons",
+                "{{couponId}}",
+                "restore"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Apply Coupon",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"code\": \"fs4-ew\",\r\n    \"subtotal\":300000\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/coupons/apply",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "coupons",
+                "apply"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Order",
+      "item": [
+        {
+          "name": "Cash Order",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"address\": \"15 Tahrir St, Dokki, Giza\",\r\n    \"phone\": \"01012345678\",\r\n    \"email\": \"test@example.com\",\r\n    \"couponCode\": \"SAVE-X\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/order/cash",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "order",
+                "cash"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Card Order",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"address\": \"15 Tahrir St, Dokki, Giza\",\r\n    \"phone\": \"01012345678\",\r\n    \"email\": \"test@example.com\",\r\n    \"couponCode\": \"SAVE-Y\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/order/card",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "order",
+                "card"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change  Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\t\"status\": \"cancelled\"\r\n}\r\n\r\n// PENDING = 'pending',\r\n// \tPROCESSING = 'processing',\r\n// \tSHIPPED = 'shipped',\r\n// \tDELIVERED = 'delivered',\r\n// \tCANCELLED = 'cancelled',",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/order/6af4cc8a71cb128349adcfe0/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "order",
+                "6af4cc8a71cb128349adcfe0",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ],
   "variable": [
@@ -687,6 +1694,18 @@
     },
     {
       "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "categoryId",
+      "value": ""
+    },
+    {
+      "key": "subCategoryId",
+      "value": ""
+    },
+    {
+      "key": "couponId",
       "value": ""
     }
   ]
