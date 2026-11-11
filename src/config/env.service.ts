@@ -61,4 +61,8 @@ export const env = {
 	get cloudinaryApiSecret() {
 		return process.env.CLOUDINARY_API_SECRET as string;
 	},
+
+	get stripeSeceretKey() {
+		return process.env.STRIPE_SECRET_KEY as string;
+	},
 };

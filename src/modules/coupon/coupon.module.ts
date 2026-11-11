@@ -9,5 +9,6 @@ import { TokenModule } from '../../common/services/token/token.module.js';
 	controllers: [CouponsController],
 	providers: [CouponsService],
 	imports: [CouponModel, RedisModule, TokenModule],
+	exports: [CouponsService], 
 })
 export class CouponModule {}
