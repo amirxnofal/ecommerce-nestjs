@@ -17,10 +17,15 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path/win32';
+import { CartModule } from './modules/cart/cart.module.js';
+import { CouponModule } from './modules/coupon/coupon.module.js';
+import { OrderModule } from './modules/order/order.module.js';
+import { PaymentService } from './common/services/payment/payment.service.js';
+import { PaymentModule } from './common/services/payment/payment.module.js';
 
 @Module({
 	controllers: [AppController],
-	providers: [AppService, SecurityService],
+	providers: [AppService, SecurityService, PaymentService],
 	imports: [
 		ConfigModule.forRoot({
 			envFilePath: ['.env.dev', '.env.prod'],
@@ -70,6 +75,10 @@ import { join } from 'path/win32';
 		CategoryModule,
 		SubCategoryModule,
 		ProductModule,
+		CartModule,
+		CouponModule,
+		OrderModule,
+		PaymentModule,
 	],
 })
 export class AppModule {}

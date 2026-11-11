@@ -51,12 +51,33 @@ type ProductPagesType {
   meta: PageMetaType!
 }
 
+type ItemType {
+  product: ID!
+  quantity: Int!
+}
+
+type CartDTO {
+  _id: ID!
+  createdBy: String
+  items: [ItemType!]!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input ItemInput {
+  product: ID!
+  quantity: Int!
+}
+
 type Query {
   """Retrieves all products"""
   findAllProducts(page: Int = 1, limit: Int = 10): ProductPagesType!
 
   """Retrieves a product by its slug"""
   findProductBySlug(slug: String!): ProductType!
+
+  """Retrieves the user cart"""
+  myCart: CartDTO!
 }
 
 type Mutation {
@@ -65,4 +86,11 @@ type Mutation {
 
   """Restores a soft-deleted product"""
   restoreProduct(id: ID!): ProductType!
+
+  """Creates a cart or adds products to the existing one"""
+  createCart(products: [ItemInput!]!): CartDTO!
+  updateCartItem(product: ID!, quantity: Int!): CartDTO!
+  removeCartItem(product: ID!): CartDTO!
+  clearCart: CartDTO!
+  removeCart: String!
 }
