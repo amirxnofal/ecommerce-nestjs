@@ -16,11 +16,12 @@ import {
 import { PaginationArgs } from './gql/pagination.gql.dto.js';
 import { ProductService } from './product.service.js';
 import { Types } from 'mongoose';
-import { Req, UseGuards } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { RolesGuard } from '../../common/guard/roles/roles.guard.js';
 import { AuthGuard } from '../../common/guard/auth/auth.guard.js';
 import { Roles } from '../../common/decorators/roles/roles.decorator.js';
 import { UserRole } from '../../common/enums/user.enum.js';
+import type { AuthRequest } from '../../common/types/auth-request.types.js';
 
 @Resolver(() => ProductType)
 export class ProductResolver {
@@ -71,7 +72,7 @@ export class ProductResolver {
 	@Roles([UserRole.ADMIN, UserRole.SELLER])
 	async removeProduct(
 		@Args('id', { type: () => ID }) id: string,
-		@Context('req') req: Request & { user: { userId: Types.ObjectId } },
+		@Context('req') req: AuthRequest,
 	) {
 		const { message } = await this.productService.remove(
 			id,
@@ -88,7 +89,7 @@ export class ProductResolver {
 	@Roles([UserRole.ADMIN, UserRole.SELLER])
 	async restoreProduct(
 		@Args('id', { type: () => ID }) id: string,
-		@Context('req') req: Request & { user: { userId: Types.ObjectId } },
+		@Context('req') req: AuthRequest,
 	) {
 		return this.productService.restore(id, req.user.userId);
 	}

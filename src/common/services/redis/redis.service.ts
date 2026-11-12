@@ -2,9 +2,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import { createClient, RedisClientType } from 'redis';
 import { env } from '../../../config/env.service.js';
 import { TokenTypeEnum } from '../../enums/token.enum.js';
-import { DecodedToken } from '../token/token.service.js';
 import { RedisKeys } from '../../constants/redis-key.constant.js';
 import { Types } from 'mongoose';
+import { DecodedToken } from '../../types/auth-request.types.js';
 
 type UserId = string | Types.ObjectId;
 

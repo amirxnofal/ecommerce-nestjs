@@ -8,8 +8,8 @@ import {
 import { Reflector } from '@nestjs/core';
 import { Roles } from '../../decorators/roles/roles.decorator.js';
 import { CTXType } from '../../interfaces/context.interface.js';
-import { AuthRequest } from '../auth/auth.guard.js';
 import { GqlExecutionContext } from '@nestjs/graphql';
+import { AuthRequest } from '../../types/auth-request.types.js';
 
 @Injectable()
 export class RolesGuard implements CanActivate {

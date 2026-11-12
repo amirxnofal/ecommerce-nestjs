@@ -1,1712 +1,1029 @@
 {
-  "info": {
-    "_postman_id": "295644ba-931a-4bb9-a284-86cdcd3974fa",
-    "name": "ecommerce-nestJs",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "54240278",
-    "_collection_link": "https://go.postman.co/collection/54240278-295644ba-931a-4bb9-a284-86cdcd3974fa?source=collection_link"
-  },
-  "item": [
-    {
-      "name": "Auth",
-      "item": [
-        {
-          "name": "Register",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "image",
-                  "type": "file",
-                  "src": [
-                    "/C:/Users/x50am/Pictures/AirPods Pro 2.jpg"
-                  ]
-                },
-                {
-                  "key": "email",
-                  "value": "{{email}}",
-                  "type": "text"
-                },
-                {
-                  "key": "name",
-                  "value": "amirxnofal",
-                  "type": "text"
-                },
-                {
-                  "key": "password",
-                  "value": "{{password}}",
-                  "type": "text"
-                },
-                {
-                  "key": "confirmPassword",
-                  "value": "{{password}}",
-                  "type": "text"
-                },
-                {
-                  "key": "phone",
-                  "value": "01012335619",
-                  "type": "text"
-                },
-                {
-                  "key": "gender",
-                  "value": "male",
-                  "type": "text"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/register",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "register"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Resend OTP",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"email\": \"{{email}}\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/resend-otp",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "resend-otp"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Verify email",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"otp\": \"251760\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/verify",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "verify"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Login",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "if (pm.response.code === 200) {\r\n    const json = pm.response.json();\r\n    if (json.data && json.data.accessToken) {\r\n        pm.collectionVariables.set('accessToken', json.data.accessToken);\r\n        if (json.data.refreshToken) {\r\n            pm.collectionVariables.set('refreshToken', json.data.refreshToken);\r\n        }\r\n        console.log('Auto saved accessToken & refreshToken');\r\n    }\r\n}"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "login"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Refresh token",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "if (pm.response.code === 200) {\r\n    const json = pm.response.json();\r\n    if (json.data && json.data.accessToken) {\r\n        pm.collectionVariables.set('accessToken', json.data.accessToken);\r\n        pm.collectionVariables.set('refreshToken', json.data.refreshToken);\r\n        console.log('Auto saved accessToken & refreshToken');\r\n    }\r\n}"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"refreshToken\": \"{{refreshToken}}\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/refresh",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "refresh"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Forget password",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"email\": \"{{email}}\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/forget",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "forget"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Reset password",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"newPassword\": \"{{password}}\",\r\n    \"confirmNewPassword\": \"{{password}}\",\r\n    \"otp\": \"618033\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/reset",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "reset"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Logout (current device)",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"refreshToken\": \"{{refreshToken}}\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/auth/logout",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "logout"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Logout All Devices",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/auth/logout-all",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "logout-all"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "User",
-      "item": [
-        {
-          "name": "Get My Profile",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "if (pm.response.code === 200) {\r\n    const json = pm.response.json();\r\n    if (json.data && json.data._id) {\r\n        pm.collectionVariables.set('userId', json.data._id);\r\n        console.log('Auto saved userId');\r\n    }\r\n}"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/users/me",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "users",
-                "me"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update Profile",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PATCH",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "gender",
-                  "value": "male",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "image",
-                  "type": "file",
-                  "src": [
-                    "/C:/Users/x50am/Pictures/BG_02.png"
-                  ]
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/users/me",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "users",
-                "me"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Delete Account",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"password\": \"{{password}}\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/users/me",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "users",
-                "me"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Brand",
-      "item": [
-        {
-          "name": "Get All Brands",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"password\": \"{{password}}\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/brand",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "brand"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create Brand",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "name",
-                  "value": "Product 3712321",
-                  "type": "text"
-                },
-                {
-                  "key": "image",
-                  "type": "file",
-                  "src": [
-                    "/C:/Users/x50am/Pictures/Amazon Echo Dot (5th Gen).jpg"
-                  ]
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/brand",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "brand"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update Brand",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PATCH",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "name",
-                  "value": "Product 69",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "image",
-                  "type": "file",
-                  "src": [
-                    "/C:/Users/x50am/Pictures/Amazon Echo Dot (5th Gen).jpg"
-                  ]
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/brand/product-3712321",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "brand",
-                "product-3712321"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Delete Brand",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/brand/product-asd/delete",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "brand",
-                "product-asd",
-                "delete"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Restore Brand",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/brand/product-asd/restore",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "brand",
-                "product-asd",
-                "restore"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Brand By Slug",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/brand/2324",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "brand",
-                "2324"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Category",
-      "item": [
-        {
-          "name": "All Categories",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/categories",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "categories"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Category by ID",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/categories/{{categoryId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "categories",
-                "{{categoryId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create Category",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "name",
-                  "value": "Sports",
-                  "type": "text"
-                },
-                {
-                  "key": "description",
-                  "value": "Sports equipment and accessories",
-                  "type": "text"
-                },
-                {
-                  "key": "image",
-                  "type": "file",
-                  "src": [
-                    "/C:/Users/x50am/Pictures/AirPods Pro 2.jpg"
-                  ]
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/categories",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "categories"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Edit Category",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PATCH",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "name",
-                  "value": "Electronic updated 1",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "description",
-                  "value": "Electronic devices and gadgets",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "image",
-                  "type": "file",
-                  "src": [
-                    "/C:/Users/x50am/Pictures/AirPods Pro 2.jpg"
-                  ]
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/categories/{{categoryId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "categories",
-                "{{categoryId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Delete Category",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/categories/{{categoryId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "categories",
-                "{{categoryId}}"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "SubCategory",
-      "item": [
-        {
-          "name": "All SubCategories",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/subcategories?category={{categoryId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "subcategories"
-              ],
-              "query": [
-                {
-                  "key": "category",
-                  "value": "{{categoryId}}"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get SubCategory by ID",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/subcategories/6ae491764e1be0d7fcd00cfa",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "subcategories",
-                "6ae491764e1be0d7fcd00cfa"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create SubCategory",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "name",
-                  "value": "Sports1",
-                  "type": "text"
-                },
-                {
-                  "key": "description",
-                  "value": "Sports equipment and accessories",
-                  "type": "text"
-                },
-                {
-                  "key": "image",
-                  "type": "file",
-                  "src": [
-                    "/C:/Users/x50am/Pictures/Audio & Headphones.jpg"
-                  ]
-                },
-                {
-                  "key": "category",
-                  "value": "{{categoryId}}",
-                  "type": "text"
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/subcategories",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "subcategories"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Edit SubCategory",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PATCH",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "name",
-                  "value": "Electronic updated 1",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "description",
-                  "value": "Electronic devices and gadgets",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "image",
-                  "type": "file",
-                  "src": [
-                    "/C:/Users/x50am/Pictures/AirPods Pro 2.jpg"
-                  ]
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/subcategories/{{subCategoryId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "subcategories",
-                "{{subCategoryId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Delete SubCategory",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": []
-            },
-            "url": {
-              "raw": "{{baseUrl}}/subcategories/{{subCategoryId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "subcategories",
-                "{{subCategoryId}}"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Products",
-      "item": [
-        {
-          "name": "Create Product",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "name",
-                  "value": "Amazon Echo Dot (5th Gen)",
-                  "type": "text"
-                },
-                {
-                  "key": "description",
-                  "value": "Latest model of Amazon Echo Dot ",
-                  "type": "text"
-                },
-                {
-                  "key": "stock",
-                  "value": "10",
-                  "type": "text"
-                },
-                {
-                  "key": "salePrice",
-                  "value": "20000",
-                  "type": "text"
-                },
-                {
-                  "key": "originalPrice",
-                  "value": "25000",
-                  "type": "text"
-                },
-                {
-                  "key": "discountPercentage",
-                  "value": "40",
-                  "type": "text"
-                },
-                {
-                  "key": "category",
-                  "value": "6ae491764e1be0d7fcd00cf0",
-                  "type": "text"
-                },
-                {
-                  "key": "subCategory",
-                  "value": "6ae491764e1be0d7fcd00cfb",
-                  "type": "text"
-                },
-                {
-                  "key": "brand",
-                  "value": "6ae0bf078523d1a301fccb66",
-                  "type": "text"
-                },
-                {
-                  "key": "image",
-                  "type": "file",
-                  "src": [
-                    "/C:/Users/x50am/Pictures/Amazon Echo Dot (5th Gen).jpg"
-                  ]
-                },
-                {
-                  "key": "gallery",
-                  "type": "file",
-                  "src": [
-                    "/C:/Users/x50am/Pictures/iPhone 15 Pro (1).jpg",
-                    "/C:/Users/x50am/Pictures/iPhone 15 Pro (2).jpg",
-                    "/C:/Users/x50am/Pictures/iPhone 15 Pro (3).jpg"
-                  ],
-                  "disabled": true
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/product",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "product"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "All Products",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/product?page=1&limit=10",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "product"
-              ],
-              "query": [
-                {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "limit",
-                  "value": "10"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Product by Slug",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/product/iphone-15-6b1b64",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "product",
-                "iphone-15-6b1b64"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Edit product",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PATCH",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "name",
-                  "value": "iPhone 17 Pro Max",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "description",
-                  "value": "Latest Apple smartphone with A17 Pro chip, 6.1-inch display, advanced camera system",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "stock",
-                  "value": "150",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "originalPrice",
-                  "value": "73940",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "discountPercentage",
-                  "value": "50",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "category",
-                  "value": "6ae491764e1be0d7fcd00cf0",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "subCategory",
-                  "value": "6ae491764e1be0d7fcd00cf4",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "brand",
-                  "value": "6ae0bf078523d1a301fccb66",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "image",
-                  "type": "file",
-                  "src": [
-                    "/C:/Users/x50am/Pictures/AirPods Pro 2.jpg"
-                  ],
-                  "disabled": true
-                },
-                {
-                  "key": "gallery",
-                  "type": "file",
-                  "src": [
-                    "/C:/Users/x50am/Pictures/BG_02.png",
-                    "/C:/Users/x50am/Pictures/social_media_app_banner.png",
-                    "/C:/Users/x50am/Pictures/Sony WH-1000XM5.jpg",
-                    "/C:/Users/x50am/Pictures/MacBook Air M2 - Copy.jpg",
-                    "/C:/Users/x50am/Pictures/Laptops & Computers - Copy.jpg"
-                  ],
-                  "disabled": true
-                },
-                {
-                  "key": "removeImages",
-                  "value": "ecommerce/products/6aef2b58b6fd1b4dc96b1b68/gallery/m3lnrbhxr1hryicy4ieb",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "removeImages",
-                  "value": "ecommerce/products/6aef2b58b6fd1b4dc96b1b68/gallery/m3lnrbhxr1hryicy4ieb",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "removeImages",
-                  "value": "ecommerce/products/6aef2b58b6fd1b4dc96b1b68/gallery/rlknxabcrqctmwtrvbew",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "removeImages",
-                  "value": "ecommerce/products/6aef26aef2b58b6fd1b4dc96b1b68/gallery/j4oitjhozao8dj7nx3vc",
-                  "type": "text",
-                  "disabled": true
-                },
-                {
-                  "key": "removeImages",
-                  "value": "ecommerce/products/6aef2b58b6fd1b4dc96b1b68/gallery/iv23s2fjhde6sfdhj3ke",
-                  "type": "text",
-                  "disabled": true
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{baseUrl}}/product/cc903c",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "product",
-                "cc903c"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Delete Product",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/product/6aef2b34b6fd1b4dc96b1b64/delete",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "product",
-                "6aef2b34b6fd1b4dc96b1b64",
-                "delete"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Restore Product",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/product/6aef2b34b6fd1b4dc96b1b64/restore",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "product",
-                "6aef2b34b6fd1b4dc96b1b64",
-                "restore"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Coupon",
-      "item": [
-        {
-          "name": "Create Coupon",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"code\": \"SAVE-Y\",\r\n    \"discount\": 4500,\r\n    \"expire\": \"2027-01-01T00:00:00.000Z\",\r\n    \"type\": \"fixed\",\r\n    \"isActive\": true,\r\n    \"maxDiscount\": 0,\r\n    \"minOrderAmount\": 0,\r\n    // \"startsAt\": \"2026-01-01T00:00:00.000Z\",\r\n    \"usageLimit\": 100\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/coupons",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "coupons"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get All Coupons",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/coupons",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "coupons"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update Coupon",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PATCH",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"discount\": 27,\r\n    \"expiresAt\": \"2027-06-01T00:00:00.000Z\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/coupons/{{couponId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "coupons",
-                "{{couponId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Soft Delete Coupon",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/coupons/{{couponId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "coupons",
-                "{{couponId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Restore Coupon",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/coupons/{{couponId}}/restore",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "coupons",
-                "{{couponId}}",
-                "restore"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Apply Coupon",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"code\": \"fs4-ew\",\r\n    \"subtotal\":300000\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/coupons/apply",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "coupons",
-                "apply"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Order",
-      "item": [
-        {
-          "name": "Cash Order",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"address\": \"15 Tahrir St, Dokki, Giza\",\r\n    \"phone\": \"01012345678\",\r\n    \"email\": \"test@example.com\",\r\n    \"couponCode\": \"SAVE-X\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/order/cash",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "order",
-                "cash"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Card Order",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"address\": \"15 Tahrir St, Dokki, Giza\",\r\n    \"phone\": \"01012345678\",\r\n    \"email\": \"test@example.com\",\r\n    \"couponCode\": \"SAVE-Y\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/order/card",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "order",
-                "card"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Change  Status",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PATCH",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n\t\"status\": \"cancelled\"\r\n}\r\n\r\n// PENDING = 'pending',\r\n// \tPROCESSING = 'processing',\r\n// \tSHIPPED = 'shipped',\r\n// \tDELIVERED = 'delivered',\r\n// \tCANCELLED = 'cancelled',",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/order/6af4cc8a71cb128349adcfe0/status",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "order",
-                "6af4cc8a71cb128349adcfe0",
-                "status"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    }
-  ],
-  "variable": [
-    {
-      "key": "password",
-      "value": ""
-    },
-    {
-      "key": "email",
-      "value": ""
-    },
-    {
-      "key": "refreshToken",
-      "value": ""
-    },
-    {
-      "key": "accessToken",
-      "value": ""
-    },
-    {
-      "key": "userId",
-      "value": ""
-    },
-    {
-      "key": "categoryId",
-      "value": ""
-    },
-    {
-      "key": "subCategoryId",
-      "value": ""
-    },
-    {
-      "key": "couponId",
-      "value": ""
-    }
-  ]
+	"info": {
+		"_postman_id": "295644ba-931a-4bb9-a284-86cdcd3974fa",
+		"name": "ecommerce-nestJs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "54240278",
+		"_collection_link": "https://go.postman.co/collection/54240278-295644ba-931a-4bb9-a284-86cdcd3974fa?source=collection_link"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{ "key": "token", "value": "{{accessToken}}", "type": "string" }
+		]
+	},
+	"event": [
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test('Response time is under 3000ms', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(3000);",
+					"});",
+					"",
+					"const isJson = (pm.response.headers.get('Content-Type') || '').includes('json');",
+					"if (pm.response.code >= 200 && pm.response.code < 300 && isJson) {",
+					"    pm.test('Response has a message', function () {",
+					"        pm.expect(pm.response.json()).to.have.property('message');",
+					"    });",
+					"}"
+				]
+			}
+		}
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\",\n    \"name\": \"amirxnofal\",\n    \"password\": \"{{password}}\",\n    \"confirmPassword\": \"{{password}}\",\n    \"phone\": \"01012335619\",\n    \"gender\": \"male\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "register"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify email",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\",\n    \"otp\": \"{{otp}}\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/verify",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "verify"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Resend OTP",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/resend-otp",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "resend-otp"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const json = pm.response.json();",
+									"    if (json.data && json.data.accessToken) {",
+									"        pm.collectionVariables.set('accessToken', json.data.accessToken);",
+									"        if (json.data.refreshToken) {",
+									"            pm.collectionVariables.set('refreshToken', json.data.refreshToken);",
+									"        }",
+									"        console.log('Auto saved accessToken & refreshToken');",
+									"    }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Google Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const json = pm.response.json();",
+									"    if (json.data && json.data.accessToken) {",
+									"        pm.collectionVariables.set('accessToken', json.data.accessToken);",
+									"        if (json.data.refreshToken) {",
+									"            pm.collectionVariables.set('refreshToken', json.data.refreshToken);",
+									"        }",
+									"        console.log('Auto saved accessToken & refreshToken');",
+									"    }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"idToken\": \"{{googleIdToken}}\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/google-login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "google-login"]
+						},
+						"description": "Check the field name against GoogleLoginDto (assumed: idToken)."
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const json = pm.response.json();",
+									"    if (json.data && json.data.accessToken) {",
+									"        pm.collectionVariables.set('accessToken', json.data.accessToken);",
+									"        if (json.data.refreshToken) {",
+									"            pm.collectionVariables.set('refreshToken', json.data.refreshToken);",
+									"        }",
+									"        console.log('Auto saved accessToken & refreshToken');",
+									"    }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/refresh",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "refresh"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forget password",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/forget",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "forget"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset password",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{email}}\",\n    \"newPassword\": \"{{password}}\",\n    \"confirmNewPassword\": \"{{password}}\",\n    \"otp\": \"{{otp}}\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/reset",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "reset"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout (current device)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "logout"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout All Devices",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout-all",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "logout-all"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get My Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const json = pm.response.json();",
+									"    if (json.data && json.data._id) {",
+									"        pm.collectionVariables.set('userId', json.data._id);",
+									"        console.log('Auto saved userId');",
+									"    }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["users", "me"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"gender\": \"male\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["users", "me"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Account",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"{{password}}\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["users", "me"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Brand",
+			"item": [
+				{
+					"name": "Get All Brands",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/brand",
+							"host": ["{{baseUrl}}"],
+							"path": ["brand"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Brand",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code >= 200 && pm.response.code < 300) {",
+									"    const d = pm.response.json().data;",
+									"    if (d) {",
+									"        if (d._id) pm.collectionVariables.set('brandId', d._id);",
+									"        if (d.slug) pm.collectionVariables.set('brandSlug', d.slug);",
+									"        console.log('Auto saved brandId & brandSlug');",
+									"    }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Brand {{$timestamp}}\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/brand",
+							"host": ["{{baseUrl}}"],
+							"path": ["brand"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Brand By Slug",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/brand/{{brandSlug}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["brand", "{{brandSlug}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Brand",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Brand Updated {{$timestamp}}\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/brand/{{brandSlug}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["brand", "{{brandSlug}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Brand",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/brand/{{brandSlug}}/delete",
+							"host": ["{{baseUrl}}"],
+							"path": ["brand", "{{brandSlug}}", "delete"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restore Brand",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/brand/{{brandSlug}}/restore",
+							"host": ["{{baseUrl}}"],
+							"path": ["brand", "{{brandSlug}}", "restore"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "All Categories",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/categories",
+							"host": ["{{baseUrl}}"],
+							"path": ["categories"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Category by ID",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/categories/{{categoryId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["categories", "{{categoryId}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code >= 200 && pm.response.code < 300) {",
+									"    const d = pm.response.json().data;",
+									"    if (d && d._id) {",
+									"        pm.collectionVariables.set('categoryId', d._id);",
+									"        console.log('Auto saved categoryId');",
+									"    }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Sports {{$timestamp}}\",\n    \"description\": \"Sports equipment and accessories\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/categories",
+							"host": ["{{baseUrl}}"],
+							"path": ["categories"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Category",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Electronic updated {{$timestamp}}\",\n    \"description\": \"Electronic devices and gadgets\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/categories/{{categoryId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["categories", "{{categoryId}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/categories/{{categoryId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["categories", "{{categoryId}}"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SubCategory",
+			"item": [
+				{
+					"name": "All SubCategories",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/subcategories?category={{categoryId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["subcategories"],
+							"query": [
+								{ "key": "category", "value": "{{categoryId}}" }
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get SubCategory by ID",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/subcategories/{{subCategoryId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["subcategories", "{{subCategoryId}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create SubCategory",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code >= 200 && pm.response.code < 300) {",
+									"    const d = pm.response.json().data;",
+									"    if (d && d._id) {",
+									"        pm.collectionVariables.set('subCategoryId', d._id);",
+									"        console.log('Auto saved subCategoryId');",
+									"    }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Sub Sports {{$timestamp}}\",\n    \"description\": \"Sports equipment and accessories\",\n    \"category\": \"{{categoryId}}\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/subcategories",
+							"host": ["{{baseUrl}}"],
+							"path": ["subcategories"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit SubCategory",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Sub Electronic updated {{$timestamp}}\",\n    \"description\": \"Electronic devices and gadgets\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/subcategories/{{subCategoryId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["subcategories", "{{subCategoryId}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete SubCategory",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/subcategories/{{subCategoryId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["subcategories", "{{subCategoryId}}"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Create Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code >= 200 && pm.response.code < 300) {",
+									"    const d = pm.response.json().data;",
+									"    if (d) {",
+									"        if (d._id) pm.collectionVariables.set('productId', d._id);",
+									"        if (d.slug) pm.collectionVariables.set('productSlug', d.slug);",
+									"        console.log('Auto saved productId & productSlug');",
+									"    }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Amazon Echo Dot (5th Gen)\",\n    \"description\": \"Latest model of Amazon Echo Dot\",\n    \"stock\": 10,\n    \"salePrice\": 20000,\n    \"originalPrice\": 25000,\n    \"discountPercentage\": 20,\n    \"category\": \"{{categoryId}}\",\n    \"subCategory\": \"{{subCategoryId}}\",\n    \"brand\": \"{{brandId}}\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/product",
+							"host": ["{{baseUrl}}"],
+							"path": ["product"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Products",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/product?page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["product"],
+							"query": [
+								{ "key": "page", "value": "1" },
+								{ "key": "limit", "value": "10" }
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Product by Slug",
+					"request": {
+						"auth": { "type": "noauth" },
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/product/{{productSlug}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["product", "{{productSlug}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit product",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"iPhone 17 Pro Max\",\n    \"description\": \"Latest Apple smartphone with A17 Pro chip, 6.1-inch display, advanced camera system\",\n    \"stock\": 150,\n    \"originalPrice\": 73940,\n    \"discountPercentage\": 50\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/product/{{productId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["product", "{{productId}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/product/{{productId}}/delete",
+							"host": ["{{baseUrl}}"],
+							"path": ["product", "{{productId}}", "delete"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restore Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/product/{{productId}}/restore",
+							"host": ["{{baseUrl}}"],
+							"path": ["product", "{{productId}}", "restore"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Coupon",
+			"item": [
+				{
+					"name": "Create Coupon",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.collectionVariables.set('couponCode', 'SAVE-' + Date.now().toString(36).toUpperCase());"
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code >= 200 && pm.response.code < 300) {",
+									"    const d = pm.response.json().data;",
+									"    if (d && d._id) {",
+									"        pm.collectionVariables.set('couponId', d._id);",
+									"        console.log('Auto saved couponId');",
+									"    }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"{{couponCode}}\",\n    \"discount\": 4500,\n    \"expire\": \"2027-12-31T00:00:00.000Z\",\n    \"type\": \"fixed\",\n    \"isActive\": true,\n    \"maxDiscount\": 0,\n    \"minOrderAmount\": 0,\n    \"usageLimit\": 100\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/coupons",
+							"host": ["{{baseUrl}}"],
+							"path": ["coupons"]
+						},
+						"description": "Optional field: startsAt (ISO date)."
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Coupons",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/coupons",
+							"host": ["{{baseUrl}}"],
+							"path": ["coupons"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Coupon",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"discount\": 27,\n    \"expiresAt\": \"2027-06-01T00:00:00.000Z\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/coupons/{{couponId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["coupons", "{{couponId}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Apply Coupon",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\": \"{{couponCode}}\",\n    \"subtotal\": 300000\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/coupons/apply",
+							"host": ["{{baseUrl}}"],
+							"path": ["coupons", "apply"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Soft Delete Coupon",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/coupons/{{couponId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["coupons", "{{couponId}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restore Coupon",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/coupons/{{couponId}}/restore",
+							"host": ["{{baseUrl}}"],
+							"path": ["coupons", "{{couponId}}", "restore"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Cash Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code >= 200 && pm.response.code < 300) {",
+									"    const d = pm.response.json().data;",
+									"    const id = d && (d._id || (d.order && d.order._id));",
+									"    if (id) {",
+									"        pm.collectionVariables.set('orderId', id);",
+									"        console.log('Auto saved orderId');",
+									"    }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address\": \"15 Tahrir St, Dokki, Giza\",\n    \"phone\": \"01012345678\",\n    \"email\": \"test@example.com\",\n    \"couponCode\": \"{{couponCode}}\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/order/cash",
+							"host": ["{{baseUrl}}"],
+							"path": ["order", "cash"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Card Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"if (pm.response.code >= 200 && pm.response.code < 300) {",
+									"    const d = pm.response.json().data;",
+									"    const id = d && (d._id || (d.order && d.order._id));",
+									"    if (id) {",
+									"        pm.collectionVariables.set('orderId', id);",
+									"        console.log('Auto saved orderId');",
+									"    }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address\": \"15 Tahrir St, Dokki, Giza\",\n    \"phone\": \"01012345678\",\n    \"email\": \"test@example.com\",\n    \"couponCode\": \"{{couponCode}}\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/order/card",
+							"host": ["{{baseUrl}}"],
+							"path": ["order", "card"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Status",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"processing\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/order/{{orderId}}/status",
+							"host": ["{{baseUrl}}"],
+							"path": ["order", "{{orderId}}", "status"]
+						},
+						"description": "Allowed status values: pending | processing | shipped | delivered | cancelled"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{ "key": "baseUrl", "value": "http://localhost:3000" },
+		{ "key": "email", "value": "" },
+		{ "key": "password", "value": "" },
+		{ "key": "otp", "value": "" },
+		{ "key": "googleIdToken", "value": "" },
+		{ "key": "accessToken", "value": "" },
+		{ "key": "refreshToken", "value": "" },
+		{ "key": "userId", "value": "" },
+		{ "key": "brandId", "value": "" },
+		{ "key": "brandSlug", "value": "" },
+		{ "key": "categoryId", "value": "" },
+		{ "key": "subCategoryId", "value": "" },
+		{ "key": "productId", "value": "" },
+		{ "key": "productSlug", "value": "" },
+		{ "key": "couponId", "value": "" },
+		{ "key": "couponCode", "value": "" },
+		{ "key": "orderId", "value": "" }
+	]
 }
+	

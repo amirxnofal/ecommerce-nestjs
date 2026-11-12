@@ -4,25 +4,13 @@ import {
 	Injectable,
 	UnauthorizedException,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { RedisService } from '../../services/redis/redis.service.js';
-import {
-	DecodedToken,
-	TokenService,
-} from '../../services/token/token.service.js';
+import { TokenService } from '../../services/token/token.service.js';
 import { TokenTypeEnum } from '../../enums/token.enum.js';
-import { UserRole } from '../../enums/user.enum.js';
 import { CTXType } from '../../interfaces/context.interface.js';
 import { GqlExecutionContext } from '@nestjs/graphql';
-
-export interface AuthUser {
-	userId: string;
-	role: UserRole;
-	jti: string;
-	exp?: number;
-}
-
-export type AuthRequest = Request & { user?: AuthUser };
+import { Types } from 'mongoose';
+import { AuthRequest, DecodedToken } from '../../types/auth-request.types.js';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -32,7 +20,7 @@ export class AuthGuard implements CanActivate {
 	) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
-		let request;
+		let request: AuthRequest;
 
 		switch (context.getType<CTXType>()) {
 			case 'http':
@@ -40,7 +28,8 @@ export class AuthGuard implements CanActivate {
 				break;
 
 			case 'graphql':
-				request = GqlExecutionContext.create(context).getContext().req as AuthRequest;
+				request = GqlExecutionContext.create(context).getContext()
+					.req as AuthRequest;
 				break;
 
 			default:
@@ -75,7 +64,7 @@ export class AuthGuard implements CanActivate {
 		}
 
 		request.user = {
-			userId: decoded.userId,
+			userId: new Types.ObjectId(decoded.userId),
 			role: decoded.role,
 			jti: decoded.jti,
 			exp: decoded.exp,

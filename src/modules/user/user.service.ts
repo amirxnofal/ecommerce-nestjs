@@ -5,16 +5,16 @@ import {
 	UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { User } from '../../database/model/user.model.js';
 import { IUser } from '../../common/interfaces/user.interface.js';
 import { UserStatus } from '../../common/enums/user.enum.js';
 import { SecurityService } from '../../common/services/security/security.service.js';
 import { RedisService } from '../../common/services/redis/redis.service.js';
 import { TokenTypeEnum } from '../../common/enums/token.enum.js';
-import type { AuthUser } from '../../common/guard/auth/auth.guard.js';
 import { DeleteAccountDto, UpdateProfileDto } from './user.validation.js';
 import { REFRESH_TTL_SECONDS } from '../../common/constants/auth.constant.js';
+import { AuthUser } from '../../common/types/auth-request.types.js';
 
 @Injectable()
 export class UsersService {
@@ -37,7 +37,7 @@ export class UsersService {
 		};
 	}
 
-	private async findActive(userId: string) {
+	private async findActive(userId: Types.ObjectId) {
 		const user = await this.model.findById(userId);
 		if (!user) throw new NotFoundException('User not found');
 		if (user.status !== UserStatus.ACTIVE)
@@ -46,16 +46,13 @@ export class UsersService {
 	}
 
 	//* =============[ Get Me ]=============
-	async getMe(userId: string) {
+	async getMe(userId: Types.ObjectId) {
 		const user = await this.findActive(userId);
 		return this.toProfile(user);
 	}
 
 	//* =============[ Update Me ]=============
-	async updateMe(
-		userId: string,
-		data: UpdateProfileDto,
-	) {
+	async updateMe(userId: Types.ObjectId, data: UpdateProfileDto) {
 		const user = await this.findActive(userId);
 
 		Object.assign(user, data);

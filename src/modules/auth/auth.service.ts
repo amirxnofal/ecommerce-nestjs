@@ -13,7 +13,6 @@ import {
 	verifyDto,
 } from './auth.validation.js';
 import {
-	DecodedToken,
 	TokenPayload,
 	TokenService,
 } from '../../common/services/token/token.service.js';
@@ -38,6 +37,7 @@ import {
 	TokenPayload as TokenPayload_Google,
 } from 'google-auth-library';
 import { env } from '../../config/env.service.js';
+import { AuthUser } from '../../common/types/auth-request.types.js';
 
 @Injectable()
 export class AuthService {
@@ -277,7 +277,7 @@ export class AuthService {
 	}
 
 	//* =============[ Logout (current device) ]=============
-	async logout(accessToken: DecodedToken, refreshToken?: string) {
+	async logout(accessToken: AuthUser, refreshToken?: string) {
 		await this.redisService.createRevokeToken(
 			accessToken,
 			TokenTypeEnum.ACCESS,

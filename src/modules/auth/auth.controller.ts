@@ -10,10 +10,7 @@ import 'multer';
 import { AuthService } from './auth.service.js';
 import { CustomValidationPipe } from '../../common/pipe/validation.pipe.js';
 
-import {
-	AuthGuard,
-	type AuthRequest,
-} from '../../common/guard/auth/auth.guard.js';
+import { AuthGuard } from '../../common/guard/auth/auth.guard.js';
 
 import {
 	type forgetPasswordDto,
@@ -33,6 +30,7 @@ import {
 	type GoogleLoginDto,
 } from './auth.validation.js';
 import { ResponseMessage } from '../../common/interceptors/response/response.interceptor.js';
+import type { AuthRequest } from '../../common/types/auth-request.types.js';
 
 @Controller('auth')
 export class AuthController {
@@ -124,7 +122,7 @@ export class AuthController {
 		@Req() req: AuthRequest,
 		@Body() body: { refreshToken?: string },
 	) {
-		return this.authService.logout(req.user!, body?.refreshToken);
+		return this.authService.logout(req.user, body?.refreshToken);
 	}
 
 	//* =============[ Logout All Devices ]=============
@@ -133,6 +131,6 @@ export class AuthController {
 	@HttpCode(200)
 	@ResponseMessage('Logged out from all devices successfully')
 	async logoutAll(@Req() req: AuthRequest) {
-		return await this.authService.logoutAll(req.user!.userId);
+		return await this.authService.logoutAll(req.user.userId.toString());
 	}
 }

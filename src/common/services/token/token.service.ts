@@ -4,21 +4,16 @@ import {
 	UnauthorizedException,
 } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import jwt, { JwtPayload, SignOptions } from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { ObjectId } from 'mongoose';
 import { TokenTypeEnum } from '../../enums/token.enum.js';
 import { env } from '../../../config/env.service.js';
 import { UserRole } from '../../enums/user.enum.js';
+import { DecodedToken } from '../../types/auth-request.types.js';
 
 export interface TokenPayload {
 	userId: string | ObjectId;
 	role: UserRole;
-}
-
-export interface DecodedToken extends JwtPayload {
-	userId: string;
-	role: UserRole;
-	jti: string;
 }
 
 interface TokenConfig {

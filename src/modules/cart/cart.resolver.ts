@@ -12,6 +12,7 @@ import { Types } from 'mongoose';
 import { CartDTO, ItemDTO } from './gql/cart.gql.dto.js';
 import { CartService } from './cart.service.js';
 import { AuthGuard } from '../../common/guard/auth/auth.guard.js';
+import type { AuthRequest } from '../../common/types/auth-request.types.js';
 
 @Resolver(() => CartDTO)
 @UseGuards(AuthGuard)
@@ -23,9 +24,7 @@ export class CartResolver {
 		name: 'myCart',
 		description: 'Retrieves the user cart',
 	})
-	myCart(
-		@Context('req') req: Request & { user: { userId: Types.ObjectId } },
-	) {
+	myCart(@Context('req') req: AuthRequest) {
 		return this.cartService.findMyCart(new Types.ObjectId(req.user.userId));
 	}
 
@@ -36,7 +35,7 @@ export class CartResolver {
 	})
 	createCart(
 		@Args('products', { type: () => [ItemDTO] }) products: ItemDTO[],
-		@Context('req') req: Request & { user: { userId: Types.ObjectId } },
+		@Context('req') req: AuthRequest,
 	) {
 		return this.cartService.createCart(
 			new Types.ObjectId(req.user.userId),
@@ -48,7 +47,7 @@ export class CartResolver {
 	updateCartItem(
 		@Args('product', { type: () => ID }) product: string,
 		@Args('quantity', { type: () => Int }) quantity: number,
-		@Context('req') req: Request & { user: { userId: Types.ObjectId } },
+		@Context('req') req: AuthRequest,
 	) {
 		return this.cartService.updateItemQuantity(
 			new Types.ObjectId(req.user.userId),
@@ -60,7 +59,7 @@ export class CartResolver {
 	@Mutation(() => CartDTO, { name: 'removeCartItem' })
 	removeCartItem(
 		@Args('product', { type: () => ID }) product: string,
-		@Context('req') req: Request & { user: { userId: Types.ObjectId } },
+		@Context('req') req: AuthRequest,
 	) {
 		return this.cartService.removeItem(
 			new Types.ObjectId(req.user.userId),
@@ -69,16 +68,12 @@ export class CartResolver {
 	}
 
 	@Mutation(() => CartDTO, { name: 'clearCart' })
-	clearCart(
-		@Context('req') req: Request & { user: { userId: Types.ObjectId } },
-	) {
+	clearCart(@Context('req') req: AuthRequest) {
 		return this.cartService.clearCart(new Types.ObjectId(req.user.userId));
 	}
 
 	@Mutation(() => String, { name: 'removeCart' })
-	async removeCart(
-		@Context('req') req: Request & { user: { userId: Types.ObjectId } },
-	) {
+	async removeCart(@Context('req') req: AuthRequest) {
 		const { message } = await this.cartService.remove(
 			new Types.ObjectId(req.user.userId),
 		);

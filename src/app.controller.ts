@@ -1,24 +1,21 @@
-import { Controller, Get, UseInterceptors } from '@nestjs/common';
-import { AppService } from './app.service.js';
-import { SuccessResponseInterceptor } from './logging/logging.interceptor.js';
+import { Controller, Get } from '@nestjs/common';
 
 @Controller()
-@UseInterceptors(SuccessResponseInterceptor)
 export class AppController {
-	constructor(private readonly appService: AppService) {}
+	constructor() {}
 
 	@Get('health')
-	healthCheck(): object {
-		return this.appService.healthCheck();
+	healthCheck(): string {
+		return 'Server in healthy...';
 	}
 
 	@Get('success')
-	paymentSuccess(): object {
-		return this.appService.paymentSuccess();
+	paymentSuccess(): string {
+		return 'Payment Success...';
 	}
 
 	@Get('failed')
-	paymentFailed(): object {
-		return this.appService.paymentFailed();
+	paymentFailed(): string {
+		return 'Payment Failed...';
 	}
 }
