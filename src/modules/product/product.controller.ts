@@ -34,6 +34,7 @@ import {
 	CacheTTL,
 } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
+import { ResponseMessage } from '../../common/interceptors/response/response.interceptor.js';
 
 @Controller('product')
 export class ProductController {
@@ -54,6 +55,7 @@ export class ProductController {
 			imageUploadOptions,
 		),
 	)
+	@ResponseMessage('Product created successfully')
 	create(
 		@Body() body: CreateProductDto,
 		@Req() req: Request & { user: { userId: Types.ObjectId } },
@@ -66,11 +68,13 @@ export class ProductController {
 	@Get()
 	@UseInterceptors(CacheInterceptor)
 	@CacheTTL(10 * 1000)
+	@ResponseMessage('Products retrieved successfully')
 	findAll(@Query() query: PaginationQueryDto) {
 		return this.productService.findAll(query);
 	}
 
 	@Get(':slug')
+	@ResponseMessage('Product retrieved successfully')
 	async findOne(@Param('slug') slug: string) {
 		const key = `product:${slug}`;
 
@@ -94,6 +98,7 @@ export class ProductController {
 			imageUploadOptions,
 		),
 	)
+	@ResponseMessage('Product updated successfully')
 	async update(
 		@Param('productId') productId: string,
 		@Body() body: UpdateProductDto,
@@ -113,6 +118,7 @@ export class ProductController {
 
 	@Delete(':id/delete')
 	@UseGuards(AuthGuard, RolesGuard)
+	@ResponseMessage('Product deleted successfully')
 	async remove(
 		@Param('id') id: string,
 		@Req() req: Request & { user: { userId: Types.ObjectId } },
@@ -124,6 +130,7 @@ export class ProductController {
 
 	@Delete(':id/restore')
 	@UseGuards(AuthGuard, RolesGuard)
+	@ResponseMessage('Product restored successfully')
 	async restore(
 		@Param('id') id: string,
 		@Req() req: Request & { user: { userId: Types.ObjectId } },

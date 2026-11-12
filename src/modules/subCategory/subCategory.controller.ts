@@ -35,6 +35,7 @@ import { RolesGuard } from '../../common/guard/roles/roles.guard.js';
 import { UserRole } from '../../common/enums/user.enum.js';
 import { Roles } from '../../common/decorators/roles/roles.decorator.js';
 import { ImageValidationPipe } from '../../common/pipe/image-validation/image-validation.pipe.js';
+import { ResponseMessage } from '../../common/interceptors/response/response.interceptor.js';
 
 @Controller('subcategories')
 export class SubCategoryController {
@@ -42,6 +43,7 @@ export class SubCategoryController {
 
 	//* GET /subcategories?category=<id>
 	@Get()
+	@ResponseMessage('Subcategories retrieved successfully')
 	getSubCategories(
 		@Query(new CustomValidationPipe(subCategoryQuerySchema))
 		query: SubCategoryQuery,
@@ -51,6 +53,7 @@ export class SubCategoryController {
 
 	//* GET /subcategories/:subCategoryId
 	@Get(':subCategoryId')
+	@ResponseMessage('Subcategory retrieved successfully')
 	getSubCategoryById(
 		@Param(new CustomValidationPipe(subCategoryIdParamSchema))
 		params: SubCategoryIdParam,
@@ -63,6 +66,7 @@ export class SubCategoryController {
 	@UseGuards(AuthGuard, RolesGuard)
 	@Roles([UserRole.ADMIN])
 	@UseInterceptors(FileInterceptor('image', imageUploadOptions))
+	@ResponseMessage('Subcategory created successfully')
 	createSubCategory(
 		@Body(new CustomValidationPipe(createSubCategorySchema))
 		body: CreateSubCategoryDto,
@@ -81,6 +85,7 @@ export class SubCategoryController {
 	@UseGuards(AuthGuard, RolesGuard)
 	@Roles([UserRole.ADMIN])
 	@UseInterceptors(FileInterceptor('image', imageUploadOptions))
+	@ResponseMessage('Subcategory updated successfully')
 	updateSubCategory(
 		@Param(new CustomValidationPipe(subCategoryIdParamSchema))
 		params: SubCategoryIdParam,
@@ -100,6 +105,7 @@ export class SubCategoryController {
 	@HttpCode(HttpStatus.OK)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Roles([UserRole.ADMIN])
+	@ResponseMessage('Subcategory deleted successfully')
 	deleteSubCategory(
 		@Param(new CustomValidationPipe(subCategoryIdParamSchema))
 		params: SubCategoryIdParam,

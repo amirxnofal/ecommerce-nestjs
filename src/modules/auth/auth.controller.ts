@@ -32,6 +32,7 @@ import {
 	verifySchema,
 	type GoogleLoginDto,
 } from './auth.validation.js';
+import { ResponseMessage } from '../../common/interceptors/response/response.interceptor.js';
 
 @Controller('auth')
 export class AuthController {
@@ -39,99 +40,99 @@ export class AuthController {
 
 	//* =============[ Register ]=============
 	@Post('register')
+	@ResponseMessage('User registered successfully')
 	async register(
 		@Body(new CustomValidationPipe(registerSchema)) body: RegisterDto,
 	) {
-		const user = await this.authService.register(body);
-		return { message: 'Registered successfully', data: user };
+		return await this.authService.register(body);
 	}
 
 	//* =============[ Email Login ]=============
 	@Post('login')
 	@HttpCode(200)
+	@ResponseMessage('Logged in successfully')
 	async login(@Body(new CustomValidationPipe(loginSchema)) body: loginDto) {
-		const result = await this.authService.login(body);
-		return { message: 'Login successfully', data: result };
+		return await this.authService.login(body);
 	}
 
 	//* =============[ Google Login ]=============
 	@Post('google-login')
 	@HttpCode(200)
+	@ResponseMessage('Logged in with Google successfully')
 	async googleLogin(@Body() body: GoogleLoginDto) {
-		const data = await this.authService.googleLogin(body);
-		return { message: 'Login successfully', data };
+		return await this.authService.googleLogin(body);
 	}
 
 	//* =============[ Verify Email ]=============
 	@Post('verify')
 	@HttpCode(200)
+	@ResponseMessage('Account verified successfully')
 	async verify(
 		@Body(new CustomValidationPipe(verifySchema)) body: verifyDto,
 	) {
-		await this.authService.verify(body);
-		return { message: 'Account verified' };
+		return await this.authService.verify(body);
 	}
 
 	//* =============[ Resend OTP ]=============
 	@Post('resend-otp')
 	@HttpCode(200)
+	@ResponseMessage('OTP sent successfully')
 	async resendOtp(
 		@Body(new CustomValidationPipe(resendOtpSchema)) body: resendOtpDto,
 	) {
-		await this.authService.resendOtp(body);
-		return { message: 'OTP Sent' };
+		return await this.authService.resendOtp(body);
 	}
 
 	//* =============[ Forget Password ]=============
 	@Post('forget')
 	@HttpCode(200)
+	@ResponseMessage('OTP sent successfully')
 	async forgetPassword(
 		@Body(new CustomValidationPipe(forgetPasswordSchema))
 		body: forgetPasswordDto,
 	) {
 		await this.authService.forgetPassword(body);
-		return { message: 'OTP Sent' };
 	}
 
 	//* =============[ Reset Password ]=============
 	@Post('reset')
 	@HttpCode(200)
+	@ResponseMessage('Password reset successfully')
 	async resetPassword(
 		@Body(new CustomValidationPipe(resetPasswordSchema))
 		body: resetPasswordDto,
 	) {
-		await this.authService.resetPassword(body);
-		return { message: 'Password reset successfully' };
+		return await this.authService.resetPassword(body);
 	}
 
 	//* =============[ Refresh ]=============
 	@Post('refresh')
 	@HttpCode(200)
+	@ResponseMessage('Token refreshed successfully')
 	async refresh(
 		@Body(new CustomValidationPipe(refreshSchema)) body: refreshDto,
 	) {
-		const result = await this.authService.refresh(body.refreshToken);
-		return { message: 'Token refreshed', data: result };
+		return await this.authService.refresh(body.refreshToken);
 	}
 
 	//* =============[ Logout (current device) ]=============
 	@UseGuards(AuthGuard)
 	@Post('logout')
 	@HttpCode(200)
+	@ResponseMessage('Logged out successfully')
 	async logout(
 		@Req() req: AuthRequest,
 		@Body() body: { refreshToken?: string },
 	) {
-		await this.authService.logout(req.user!, body?.refreshToken);
-		return { message: 'Logged out successfully' };
+		return this.authService.logout(req.user!, body?.refreshToken);
 	}
 
 	//* =============[ Logout All Devices ]=============
 	@UseGuards(AuthGuard)
 	@Post('logout-all')
 	@HttpCode(200)
+	@ResponseMessage('Logged out from all devices successfully')
 	async logoutAll(@Req() req: AuthRequest) {
-		await this.authService.logoutAll(req.user!.userId);
-		return { message: 'Logged out from all devices' };
+		return await this.authService.logoutAll(req.user!.userId);
 	}
 }

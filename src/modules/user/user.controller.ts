@@ -21,6 +21,7 @@ import {
 	type UpdateProfileDto,
 	updateProfileSchema,
 } from './user.validation.js';
+import { ResponseMessage } from '../../common/interceptors/response/response.interceptor.js';
 
 @UseGuards(AuthGuard)
 @Controller('users')
@@ -29,34 +30,31 @@ export class UsersController {
 
 	//* =============[ Get Me ]=============
 	@Get('me')
+	@ResponseMessage('Profile retrieved successfully')
 	async getMe(@Req() req: AuthRequest) {
-		const user = await this.usersService.getMe(req.user!.userId);
-		return { message: 'Profile fetched', data: user };
+		return await this.usersService.getMe(req.user!.userId);
 	}
 
 	//* =============[ Update Me ]=============
 	@Patch('me')
+	@ResponseMessage('Profile updated successfully')
 	async updateMe(
 		@Req() req: AuthRequest,
 		@Body(new CustomValidationPipe(updateProfileSchema))
 		body: UpdateProfileDto,
 	) {
-		const user = await this.usersService.updateMe(
-			req.user!.userId,
-			body,
-		);
-		return { message: 'Profile updated', data: user };
+		return await this.usersService.updateMe(req.user!.userId, body);
 	}
 
 	//* =============[ Delete Me ]=============
 	@Delete('me')
 	@HttpCode(200)
+	@ResponseMessage('Account deleted successfully')
 	async deleteMe(
 		@Req() req: AuthRequest,
 		@Body(new CustomValidationPipe(deleteAccountSchema))
 		body: DeleteAccountDto,
 	) {
 		await this.usersService.deleteMe(req.user!, body);
-		return { message: 'Account deleted' };
 	}
 }

@@ -22,10 +22,19 @@ import { CouponModule } from './modules/coupon/coupon.module.js';
 import { OrderModule } from './modules/order/order.module.js';
 import { PaymentService } from './common/services/payment/payment.service.js';
 import { PaymentModule } from './common/services/payment/payment.module.js';
+import { ResponseInterceptor } from './common/interceptors/response/response.interceptor.js';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { AllExceptionsFilter } from './common/filters/all-exceptions/all-exceptions.filter.js';
 
 @Module({
 	controllers: [AppController],
-	providers: [AppService, SecurityService, PaymentService],
+	providers: [
+		AppService,
+		SecurityService,
+		PaymentService,
+		{ provide: APP_INTERCEPTOR, useClass: ResponseInterceptor },
+		{ provide: APP_FILTER, useClass: AllExceptionsFilter },
+	],
 	imports: [
 		ConfigModule.forRoot({
 			envFilePath: ['.env.dev', '.env.prod'],

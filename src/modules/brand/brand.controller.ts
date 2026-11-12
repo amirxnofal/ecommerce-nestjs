@@ -23,13 +23,14 @@ import { RolesGuard } from '../../common/guard/roles/roles.guard.js';
 import { Roles } from '../../common/decorators/roles/roles.decorator.js';
 import { UserRole } from '../../common/enums/user.enum.js';
 import { ImageValidationPipe } from '../../common/pipe/image-validation/image-validation.pipe.js';
-
+import { ResponseMessage } from '../../common/interceptors/response/response.interceptor.js';
 @Controller('brand')
 export class BrandController {
 	constructor(private readonly brandService: BrandService) {}
 
 	//* ------------------------ GET ALL BRANDS ------------------------ *//
 	@Get()
+	@ResponseMessage('Brands fetched')
 	getAllBrands() {
 		return this.brandService.getAllBrands();
 	}
@@ -39,6 +40,7 @@ export class BrandController {
 	@UseGuards(AuthGuard, RolesGuard)
 	@Roles([UserRole.ADMIN])
 	@UseInterceptors(FileInterceptor('image', imageUploadOptions))
+	@ResponseMessage('Brand created')
 	createBrand(
 		@Body(new CustomValidationPipe(createBrandSchema)) body: CreateBrandDto,
 		@Req() req: Request & { user: { userId: Types.ObjectId } },
@@ -52,6 +54,7 @@ export class BrandController {
 	@UseGuards(AuthGuard, RolesGuard)
 	@Roles([UserRole.ADMIN])
 	@UseInterceptors(FileInterceptor('image', imageUploadOptions))
+	@ResponseMessage('Brand updated')
 	updateBrand(
 		@Param('slug') slug: string,
 		@Body(new CustomValidationPipe(updateBrandSchema)) body: UpdateBrandDto,
@@ -64,6 +67,7 @@ export class BrandController {
 	@Patch(':slug/delete')
 	@UseGuards(AuthGuard, RolesGuard)
 	@Roles([UserRole.ADMIN])
+	@ResponseMessage('Brand deleted')
 	deleteBrand(@Param('slug') slug: string) {
 		return this.brandService.deleteBrand(slug);
 	}
@@ -72,12 +76,14 @@ export class BrandController {
 	@Patch(':slug/restore')
 	@UseGuards(AuthGuard, RolesGuard)
 	@Roles([UserRole.ADMIN])
+	@ResponseMessage('Brand restored')
 	restoreBrand(@Param('slug') slug: string) {
 		return this.brandService.restoreBrand(slug);
 	}
 
-	//* ------------------------ GET BRAND BY ID ------------------------ *//
+	//* ------------------------ GET BRAND BY SLUG ------------------------ *//
 	@Get(':slug')
+	@ResponseMessage('Brand fetched')
 	async getBrandBySlug(@Param('slug') slug: string) {
 		return await this.brandService.getBrandBySlug(slug);
 	}

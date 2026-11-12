@@ -18,6 +18,7 @@ import { CouponsService } from './coupon.service.js';
 import { CreateCouponDto } from './dto/create-coupon.dto.js';
 import { UpdateCouponDto } from './dto/update-coupon.dto.js';
 import { ApplyCouponDto } from './dto/apply-coupon.dto.js';
+import { ResponseMessage } from '../../common/interceptors/response/response.interceptor.js';
 
 @Controller('coupons')
 @UseGuards(AuthGuard, RolesGuard)
@@ -26,6 +27,7 @@ export class CouponsController {
 
 	@Post()
 	@Roles([UserRole.ADMIN])
+	@ResponseMessage('Coupon created successfully')
 	create(
 		@Body() body: CreateCouponDto,
 		@Req() req: Request & { user: { userId: Types.ObjectId } },
@@ -35,18 +37,21 @@ export class CouponsController {
 
 	@Get()
 	@Roles([UserRole.ADMIN])
+	@ResponseMessage('Coupons retrieved successfully')
 	findAll() {
 		return this.couponsService.findAll();
 	}
 
 	@Patch(':id')
 	@Roles([UserRole.ADMIN])
+	@ResponseMessage('Coupon updated successfully')
 	update(@Param('id') id: string, @Body() body: UpdateCouponDto) {
 		return this.couponsService.update(id, body);
 	}
 
 	@Delete(':id')
 	@Roles([UserRole.ADMIN])
+	@ResponseMessage('Coupon deleted successfully')
 	remove(
 		@Param('id') id: string,
 		@Req() req: Request & { user: { userId: Types.ObjectId } },
@@ -56,6 +61,7 @@ export class CouponsController {
 
 	@Patch(':id/restore')
 	@Roles([UserRole.ADMIN])
+	@ResponseMessage('Coupon restored successfully')
 	restore(
 		@Param('id') id: string,
 		@Req() req: Request & { user: { userId: Types.ObjectId } },
@@ -64,6 +70,7 @@ export class CouponsController {
 	}
 
 	@Post('apply')
+	@ResponseMessage('Coupon applied successfully')
 	async apply(
 		@Body() body: ApplyCouponDto,
 		@Req() req: Request & { user: { userId: Types.ObjectId } },

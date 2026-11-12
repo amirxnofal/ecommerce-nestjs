@@ -31,19 +31,21 @@ import { RolesGuard } from '../../common/guard/roles/roles.guard.js';
 import { UserRole } from '../../common/enums/user.enum.js';
 import { Roles } from '../../common/decorators/roles/roles.decorator.js';
 import { ImageValidationPipe } from '../../common/pipe/image-validation/image-validation.pipe.js';
-
+import { ResponseMessage } from '../../common/interceptors/response/response.interceptor.js';
 @Controller('categories')
 export class CategoryController {
 	constructor(private readonly categoryService: CategoryService) {}
 
 	//* GET /categories
 	@Get()
+	@ResponseMessage('Categories fetched')
 	getCategories() {
 		return this.categoryService.getCategories();
 	}
 
 	//* GET /categories/:categoryId
 	@Get(':categoryId')
+	@ResponseMessage('Category fetched')
 	getCategoryById(
 		@Param(new CustomValidationPipe(categoryIdParamSchema))
 		params: CategoryIdParam,
@@ -56,6 +58,7 @@ export class CategoryController {
 	@UseGuards(AuthGuard, RolesGuard)
 	@Roles([UserRole.ADMIN])
 	@UseInterceptors(FileInterceptor('image', imageUploadOptions))
+	@ResponseMessage('Category created')
 	createCategory(
 		@Body(new CustomValidationPipe(createCategorySchema))
 		body: CreateCategoryDto,
@@ -70,6 +73,7 @@ export class CategoryController {
 	@UseGuards(AuthGuard, RolesGuard)
 	@Roles([UserRole.ADMIN])
 	@UseInterceptors(FileInterceptor('image', imageUploadOptions))
+	@ResponseMessage('Category updated')
 	updateCategory(
 		@Param(new CustomValidationPipe(categoryIdParamSchema))
 		params: CategoryIdParam,
@@ -89,6 +93,7 @@ export class CategoryController {
 	@HttpCode(HttpStatus.OK)
 	@UseGuards(AuthGuard, RolesGuard)
 	@Roles([UserRole.ADMIN])
+	@ResponseMessage('Category deleted')
 	deleteCategory(
 		@Param(new CustomValidationPipe(categoryIdParamSchema))
 		params: CategoryIdParam,
