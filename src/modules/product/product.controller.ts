@@ -22,7 +22,6 @@ import { Roles } from '../../common/decorators/roles/roles.decorator.js';
 import { UserRole } from '../../common/enums/user.enum.js';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { imageUploadOptions } from '../../common/utils/upload.options.js';
-import { Types } from 'mongoose';
 import {
 	type ProductFiles,
 	ProductFilesValidationPipe,
@@ -35,6 +34,7 @@ import {
 } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
 import { ResponseMessage } from '../../common/interceptors/response/response.interceptor.js';
+import type { AuthRequest } from '../../common/types/auth-request.types.js';
 
 @Controller('product')
 export class ProductController {
@@ -58,7 +58,7 @@ export class ProductController {
 	@ResponseMessage('Product created successfully')
 	create(
 		@Body() body: CreateProductDto,
-		@Req() req: Request & { user: { userId: Types.ObjectId } },
+		@Req() req: AuthRequest,
 		@UploadedFiles(new ProductFilesValidationPipe())
 		files: ProductFiles,
 	) {
@@ -102,7 +102,7 @@ export class ProductController {
 	async update(
 		@Param('productId') productId: string,
 		@Body() body: UpdateProductDto,
-		@Req() req: Request & { user: { userId: Types.ObjectId } },
+		@Req() req: AuthRequest,
 		@UploadedFiles(new ProductFilesValidationPipe({ imageRequired: false }))
 		files?: ProductFiles,
 	) {
@@ -119,10 +119,7 @@ export class ProductController {
 	@Delete(':id/delete')
 	@UseGuards(AuthGuard, RolesGuard)
 	@ResponseMessage('Product deleted successfully')
-	async remove(
-		@Param('id') id: string,
-		@Req() req: Request & { user: { userId: Types.ObjectId } },
-	) {
+	async remove(@Param('id') id: string, @Req() req: AuthRequest) {
 		const product = await this.productService.remove(id, req.user.userId);
 		await this.cacheManager.del(`product:${product.slug}`);
 		return product;
@@ -131,10 +128,7 @@ export class ProductController {
 	@Delete(':id/restore')
 	@UseGuards(AuthGuard, RolesGuard)
 	@ResponseMessage('Product restored successfully')
-	async restore(
-		@Param('id') id: string,
-		@Req() req: Request & { user: { userId: Types.ObjectId } },
-	) {
+	async restore(@Param('id') id: string, @Req() req: AuthRequest) {
 		const product = await this.productService.restore(id, req.user.userId);
 		await this.cacheManager.del(`product:${product.slug}`);
 		return product;

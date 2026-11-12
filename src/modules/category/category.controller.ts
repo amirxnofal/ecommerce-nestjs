@@ -26,12 +26,12 @@ import { CustomValidationPipe } from '../../common/pipe/validation.pipe.js';
 import { AuthGuard } from '../../common/guard/auth/auth.guard.js';
 import { imageUploadOptions } from '../../common/utils/upload.options.js';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Types } from 'mongoose';
 import { RolesGuard } from '../../common/guard/roles/roles.guard.js';
 import { UserRole } from '../../common/enums/user.enum.js';
 import { Roles } from '../../common/decorators/roles/roles.decorator.js';
 import { ImageValidationPipe } from '../../common/pipe/image-validation/image-validation.pipe.js';
 import { ResponseMessage } from '../../common/interceptors/response/response.interceptor.js';
+import type { AuthRequest } from '../../common/types/auth-request.types.js';
 @Controller('categories')
 export class CategoryController {
 	constructor(private readonly categoryService: CategoryService) {}
@@ -62,7 +62,7 @@ export class CategoryController {
 	createCategory(
 		@Body(new CustomValidationPipe(createCategorySchema))
 		body: CreateCategoryDto,
-		@Req() req: Request & { user: { userId: Types.ObjectId } },
+		@Req() req: AuthRequest,
 		@UploadedFile(ImageValidationPipe) file?: Express.Multer.File,
 	) {
 		return this.categoryService.createCategory(body, req.user, file);

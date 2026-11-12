@@ -17,13 +17,12 @@ import { imageUploadOptions } from '../../common/utils/upload.options.js';
 import { CustomValidationPipe } from '../../common/pipe/validation.pipe.js';
 import type { CreateBrandDto, UpdateBrandDto } from './brand.validation.js';
 import { createBrandSchema, updateBrandSchema } from './brand.validation.js';
-import { Types } from 'mongoose';
-import type { Request } from 'express';
 import { RolesGuard } from '../../common/guard/roles/roles.guard.js';
 import { Roles } from '../../common/decorators/roles/roles.decorator.js';
 import { UserRole } from '../../common/enums/user.enum.js';
 import { ImageValidationPipe } from '../../common/pipe/image-validation/image-validation.pipe.js';
 import { ResponseMessage } from '../../common/interceptors/response/response.interceptor.js';
+import type{ AuthRequest } from '../../common/types/auth-request.types.js';
 @Controller('brand')
 export class BrandController {
 	constructor(private readonly brandService: BrandService) {}
@@ -43,7 +42,7 @@ export class BrandController {
 	@ResponseMessage('Brand created')
 	createBrand(
 		@Body(new CustomValidationPipe(createBrandSchema)) body: CreateBrandDto,
-		@Req() req: Request & { user: { userId: Types.ObjectId } },
+		@Req() req: AuthRequest,
 		@UploadedFile(ImageValidationPipe) file: Express.Multer.File,
 	) {
 		return this.brandService.createBrand(req.user.userId, body.name, file);

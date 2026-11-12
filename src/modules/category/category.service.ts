@@ -13,7 +13,6 @@ import { ISubCategory } from '../../common/interfaces/subCategory.interface.js';
 import { ICategory } from '../../common/interfaces/category.interface.js';
 import { CreateCategoryDto, UpdateCategoryDto } from './category.validation.js';
 import { CloudinaryService } from '../../common/services/cloudinary/cloudinary.service.js';
-import { UploadApiResponse } from 'cloudinary';
 import { CLOUDINARY_FOLDERS } from '../../common/constants/cloudinary.constants.js';
 import { IImage } from '../../common/interfaces/image.interface.js';
 

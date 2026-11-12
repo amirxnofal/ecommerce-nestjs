@@ -7,13 +7,11 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { HydratedDocument, Model, Types } from 'mongoose';
-import { unlink } from 'node:fs/promises';
 import { Brand } from '../../database/model/brand.model.js';
 import { IBrand } from '../../common/interfaces/brand.interface.js';
 import { generateSlug } from '../../common/utils/slug.utils.js';
 import { CloudinaryService } from '../../common/services/cloudinary/cloudinary.service.js';
 import { CLOUDINARY_FOLDERS } from '../../common/constants/cloudinary.constants.js';
-import { UploadApiResponse } from 'cloudinary';
 import { IImage } from '../../common/interfaces/image.interface.js';
 
 @Injectable()

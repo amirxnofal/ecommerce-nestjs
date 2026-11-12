@@ -15,7 +15,6 @@ import {
 	CreateSubCategoryDto,
 	UpdateSubCategoryDto,
 } from './subCategory.validation.js';
-import { UploadApiResponse } from 'cloudinary';
 import { CLOUDINARY_FOLDERS } from '../../common/constants/cloudinary.constants.js';
 import { IImage } from '../../common/interfaces/image.interface.js';
 import { CloudinaryService } from '../../common/services/cloudinary/cloudinary.service.js';

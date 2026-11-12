@@ -15,8 +15,6 @@ import {
 	UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import type { Request } from 'express';
-import { Types } from 'mongoose';
 import { SubCategoryService } from './subCategory.service.js';
 import {
 	subCategoryIdParamSchema,
@@ -36,6 +34,7 @@ import { UserRole } from '../../common/enums/user.enum.js';
 import { Roles } from '../../common/decorators/roles/roles.decorator.js';
 import { ImageValidationPipe } from '../../common/pipe/image-validation/image-validation.pipe.js';
 import { ResponseMessage } from '../../common/interceptors/response/response.interceptor.js';
+import type { AuthRequest } from '../../common/types/auth-request.types.js';
 
 @Controller('subcategories')
 export class SubCategoryController {
@@ -70,7 +69,7 @@ export class SubCategoryController {
 	createSubCategory(
 		@Body(new CustomValidationPipe(createSubCategorySchema))
 		body: CreateSubCategoryDto,
-		@Req() req: Request & { user: { userId: Types.ObjectId } },
+		@Req() req: AuthRequest,
 		@UploadedFile(ImageValidationPipe) file: Express.Multer.File,
 	) {
 		return this.subCategoryService.createSubCategory(

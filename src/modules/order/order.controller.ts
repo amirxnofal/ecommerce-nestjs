@@ -7,8 +7,6 @@ import {
 	Req,
 	UseGuards,
 } from '@nestjs/common';
-import type { Request } from 'express';
-import { Types } from 'mongoose';
 import { OrderService } from './order.service.js';
 import { CreateOrderDto } from './dto/create-order.dto.js';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto.js';
@@ -17,6 +15,7 @@ import { RolesGuard } from '../../common/guard/roles/roles.guard.js';
 import { Roles } from '../../common/decorators/roles/roles.decorator.js';
 import { UserRole } from '../../common/enums/user.enum.js';
 import { ResponseMessage } from '../../common/interceptors/response/response.interceptor.js';
+import type { AuthRequest } from '../../common/types/auth-request.types.js';
 
 @Controller('order')
 @UseGuards(AuthGuard, RolesGuard)
@@ -25,10 +24,7 @@ export class OrderController {
 
 	@Post('cash')
 	@ResponseMessage('Cash order created successfully')
-	createCashOrder(
-		@Body() body: CreateOrderDto,
-		@Req() req: Request & { user: { userId: Types.ObjectId } },
-	) {
+	createCashOrder(@Body() body: CreateOrderDto, @Req() req: AuthRequest) {
 		return this.orderService.createCashOnDeliveryOrder(
 			body,
 			req.user.userId,
@@ -37,10 +33,7 @@ export class OrderController {
 
 	@Post('card')
 	@ResponseMessage('Card order created successfully')
-	createCardOrder(
-		@Body() body: CreateOrderDto,
-		@Req() req: Request & { user: { userId: Types.ObjectId } },
-	) {
+	createCardOrder(@Body() body: CreateOrderDto, @Req() req: AuthRequest) {
 		return this.orderService.createOnlinePaymentOrder(
 			body,
 			req.user.userId,
@@ -53,7 +46,7 @@ export class OrderController {
 	updateStatus(
 		@Param('id') id: string,
 		@Body() body: UpdateOrderStatusDto,
-		@Req() req: Request & { user: { userId: Types.ObjectId } },
+		@Req() req: AuthRequest,
 	) {
 		return this.orderService.updateStatus(id, body.status, req.user.userId);
 	}
